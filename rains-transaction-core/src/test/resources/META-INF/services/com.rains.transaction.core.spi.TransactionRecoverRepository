@@ -1,0 +1,2 @@
+com.rains.transaction.core.spi.repository.JdbcTransactionRecoverRepository
+com.rains.transaction.core.spi.repository.FileTransactionRecoverRepository

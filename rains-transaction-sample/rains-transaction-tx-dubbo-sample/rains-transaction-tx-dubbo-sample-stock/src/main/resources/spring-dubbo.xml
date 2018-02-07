@@ -14,9 +14,9 @@
     <dubbo:protocol accesslog="true" name="dubbo" port="-1" />
 
 
-    <dubbo:service interface="com.happylifeplat.transaction.tx.dubbo.sample.stock.api.service.StockService"
+    <dubbo:service interface="com.rains.transaction.tx.dubbo.sample.stock.api.service.StockService"
                    ref="stockService"/>
 
-    <dubbo:reference interface="com.happylifeplat.transaction.remote.service.TxManagerRemoteService" id="txManagerRemoteService" />
+    <dubbo:reference interface="com.rains.transaction.remote.service.TxManagerRemoteService" id="txManagerRemoteService" />
 
 </beans>

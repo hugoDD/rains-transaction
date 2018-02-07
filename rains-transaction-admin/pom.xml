@@ -164,7 +164,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
 
                 <configuration>
-                    <mainClass>com.happylifeplat.transaction.admin.AdminApplication</mainClass>
+                    <mainClass>com.rains.transaction.admin.AdminApplication</mainClass>
                     <executable>true</executable>
                 </configuration>
             </plugin>

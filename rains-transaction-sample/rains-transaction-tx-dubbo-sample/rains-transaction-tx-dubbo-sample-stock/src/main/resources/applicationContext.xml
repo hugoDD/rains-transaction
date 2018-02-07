@@ -12,17 +12,17 @@
         http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"
        default-autowire="byName">
 
-    <context:component-scan base-package="com.happylifeplat.transaction.*"/>
+    <context:component-scan base-package="com.rains.transaction.*"/>
     <aop:aspectj-autoproxy expose-proxy="true"/>
-    <bean id="txTransactionBootstrap" class="com.happylifeplat.transaction.core.bootstrap.TxTransactionBootstrap">
-        <property name="txManagerUrl" value="http://172.26.223.21:8080"/>
-        <property name="serializer" value="kryo"/>
-        <property name="nettySerializer" value="kryo"/>
-        <property name="blockingQueueType" value="Linked"/>
+    <bean id="txTransactionBootstrap" class="com.rains.transaction.core.bootstrap.TxTransactionBootstrap">
+        <!--<property name="txManagerUrl" value="http://172.26.223.21:8080"/>-->
+        <!--<property name="serializer" value="kryo"/>-->
+        <!--<property name="nettySerializer" value="kryo"/>-->
+        <!--<property name="blockingQueueType" value="Linked"/>-->
         <property name="compensation" value="true"/>
         <property name="compensationCacheType" value="db"/>
         <property name="txDbConfig">
-            <bean class="com.happylifeplat.transaction.common.config.TxDbConfig">
+            <bean class="com.rains.transaction.common.config.TxDbConfig">
                 <property name="url"
                           value="jdbc:mysql://172.26.223.28:3306/tx?useUnicode=true&amp;characterEncoding=utf8"/>
                 <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
@@ -35,7 +35,7 @@
     <!--
        <property name="compensationCacheType" value="db"/>
          <property name="txDbConfig">
-          <bean class="com.happylifeplat.transaction.common.config.TxDbConfig">
+          <bean class="com.rains.transaction.common.config.TxDbConfig">
                  <property name="url"
                            value="jdbc:mysql://192.168.1.68:3306/alipay?useUnicode=true&amp;characterEncoding=utf8"/>
                  <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
@@ -47,7 +47,7 @@
 
            <property name="compensationCacheType" value="redis"/>
            <property name="txRedisConfig">
-             <bean class="com.happylifeplat.transaction.common.config.TxRedisConfig">
+             <bean class="com.rains.transaction.common.config.TxRedisConfig">
                  <property name="hostName"
                            value="192.168.1.78"/>
                  <property name="port" value="6379"/>
@@ -58,7 +58,7 @@
 
         <property name="compensationCacheType" value="zookeeper"/>
          <property name="txZookeeperConfig">
-             <bean class="com.happylifeplat.transaction.common.config.TxZookeeperConfig">
+             <bean class="com.rains.transaction.common.config.TxZookeeperConfig">
                  <property name="host" value="192.168.1.132:2181"/>
                  <property name="sessionTimeOut" value="100000"/>
                  <property name="rootPath" value="/tx"/>
@@ -67,7 +67,7 @@
 
           <property name="compensationCacheType" value="mongodb"/>
           <property name="txMongoConfig">
-          <bean class="com.happylifeplat.transaction.common.config.TxMongoConfig">
+          <bean class="com.rains.transaction.common.config.TxMongoConfig">
                         <property name="mongoDbUrl"  value="192.168.1.78:27017"/>
                  <property name="mongoDbName" value="happylife"/>
                  <property name="mongoUserName" value="xiaoyu"/>
@@ -79,7 +79,7 @@
           <property name="compensationCacheType" value="file"/>
           <property name="txFileConfig">
 
-           <bean class="com.happylifeplat.transaction.common.config.TxFileConfig">
+           <bean class="com.rains.transaction.common.config.TxFileConfig">
 
                  <property name="path"  value=""/>
                  <property name="prefix" value="tx"/>

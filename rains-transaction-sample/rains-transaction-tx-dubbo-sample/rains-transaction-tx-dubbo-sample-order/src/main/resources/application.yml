@@ -13,7 +13,7 @@ spring:
       name: order-service
 
 mybatis:
-  type-aliases-package: com.happylifeplat.transaction.tx.dubbo.sample.order.api.entity
+  type-aliases-package: com.rains.transaction.tx.dubbo.sample.order.api.entity
   config-location: classpath:mybatis/mybatis-config.xml
   mapper-locations: classpath:mybatis/mapper/*.xml
 
@@ -23,9 +23,9 @@ logging:
         root: error
         org.springframework.web: info
         org.apache.ibatis: info
-        com.happylifeplat.bonuspoint: info
-        com.happylifeplat.lottery: debug
-        com.happylifeplat: debug
+        com.rains.bonuspoint: info
+        com.rains.lottery: debug
+        com.rains: debug
         io.netty: info
 
     path: "./logs"

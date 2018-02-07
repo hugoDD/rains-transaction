@@ -1,0 +1,4 @@
+com.rains.transaction.common.serializer.KryoSerializer
+com.rains.transaction.common.serializer.ProtostuffSerializer
+com.rains.transaction.common.serializer.HessianSerializer
+com.rains.transaction.common.serializer.JavaSerializer

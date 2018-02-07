@@ -1,2 +1,2 @@
 
-TxTransactionFilter=com.happylifeplat.transaction.tx.dubbo.filter.DubboTxTransactionFilter
+TxTransactionFilter=com.rains.transaction.tx.dubbo.filter.DubboTxTransactionFilter

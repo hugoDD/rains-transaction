@@ -16,14 +16,14 @@
 
 
     <dubbo:reference timeout="5000"
-                     interface="com.happylifeplat.transaction.tx.dubbo.sample.stock.api.service.StockService"
+                     interface="com.rains.transaction.tx.dubbo.sample.stock.api.service.StockService"
                      id="stockService"
                      retries="0" check="false"/>
     <dubbo:reference timeout="5000"
-                     interface="com.happylifeplat.transaction.tx.dubbo.sample.order.api.service.OrderService"
+                     interface="com.rains.transaction.tx.dubbo.sample.order.api.service.OrderService"
                      id="orderService"
                      retries="0" check="false"/>
 
-    <dubbo:reference interface="com.happylifeplat.transaction.remote.service.TxManagerRemoteService" id="txManagerRemoteService" />
+    <dubbo:reference interface="com.rains.transaction.remote.service.TxManagerRemoteService" id="txManagerRemoteService" />
 
 </beans>

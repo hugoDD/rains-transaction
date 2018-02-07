@@ -43,7 +43,7 @@
                 <enabled>true</enabled>
             </snapshots>
             <id>public</id>
-            <name>happylifeplat public repository</name>
+            <name>.rains. public repository</name>
             <url>http://maven.wang-guanjia.com/nexus/content/groups/public/</url>
         </repository>
         <repository>
