@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>rains-transaction-sample</artifactId>
+        <groupId>com.rains</groupId>
+        <version>1.0.0-RELEASE</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>rains-transaction-tx-dubbo-sample</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>rains-transaction-tx-dubbo-sample-consume</module>
+        <module>rains-transaction-tx-dubbo-sample-stock-api</module>
+        <module>rains-transaction-tx-dubbo-sample-stock</module>
+        <module>rains-transaction-tx-dubbo-sample-order-api</module>
+        <module>rains-transaction-tx-dubbo-sample-order</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.rains</groupId>
+                <artifactId>rains-transaction-tx-dubbo-sample-consume</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.rains</groupId>
+                <artifactId>rains-transaction-tx-dubbo-sample-stock-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.rains</groupId>
+                <artifactId>rains-transaction-tx-dubbo-sample-stock</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.rains</groupId>
+                <artifactId>rains-transaction-tx-dubbo-sample-order-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.rains</groupId>
+                <artifactId>rains-transaction-tx-dubbo-sample-order</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+
+    </dependencyManagement>
+
+
+</project>
