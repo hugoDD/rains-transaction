@@ -5,8 +5,6 @@ rains-transaction是强一致性分布式事务，是基于二阶段提交+本�
 
 基于java语言来开发（JDK1.8），基于dubbo的RPC特性进行分布式事务。
 
-#####  因为文件名太长，大家在拉取代码的时候执git命令：git config --global core.longpaths true
-
  # Features
 
   * **框架特性**
@@ -44,7 +42,11 @@ rains-transaction是强一致性分布式事务，是基于二阶段提交+本�
      * 本地事务序列化保存，支持java，hessian，kryo，protostuff
 ``
 # Design
- ### [架构设计](https://github.com/hugoDD/rains-transaction/wiki/design)
+ ### [架构设计]
+ *      分布式二段提交事务(已实现)
+ ![](./doc/two.svg)
+  *     tcc事务架构设计(待实现)
+ ![](./doc/tcc.png)
 
 #   Configuration
 
