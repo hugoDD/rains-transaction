@@ -18,14 +18,21 @@
 package com.rains.transaction.core.concurrent.task;
 
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * @author xiaoyu
+/*
+ * 文 件 名:  BlockTask
+ * 版    权:  Copyright (c) 2018 com.rains.hugosz
+ * 描    述:  <描述>
+ * 创 建 人:  hugosz
+ * 创建时间:  2018/3/23  11:19
  */
+@Slf4j
 public class BlockTask {
 
     /**
@@ -38,7 +45,6 @@ public class BlockTask {
     private volatile static boolean remove = false;
     private Lock lock;
     private Condition condition;
-    private CountDownLatch countDownLatch;
     private AsyncCall asyncCall;
     /**
      * 唯一标示key
@@ -54,7 +60,6 @@ public class BlockTask {
     public BlockTask() {
         lock = new ReentrantLock();
         condition = lock.newCondition();
-        //countDownLatch = new CountDownLatch(1);
 
     }
 
@@ -66,17 +71,6 @@ public class BlockTask {
         BlockTask.remove = remove;
     }
 
-    public void countDownAwait() {
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            countDownLatch.countDown();
-        }
-    }
-
-    public void countDown() {
-        countDownLatch.countDown();
-    }
 
     public void signal() {
         try {
@@ -93,7 +87,10 @@ public class BlockTask {
         try {
             lock.lock();
             condition.await();
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
+            log.error("阻塞线程中断");
+            log.error(e.getMessage(),e);
+
         } finally {
             lock.unlock();
         }

@@ -35,6 +35,7 @@ import com.rains.transaction.common.enums.TransactionStatusEnum;
 import com.rains.transaction.common.holder.LogUtil;
 import com.rains.transaction.common.netty.bean.TxTransactionGroup;
 import com.rains.transaction.common.netty.bean.TxTransactionItem;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.slf4j.Logger;
@@ -54,6 +55,7 @@ import java.util.concurrent.*;
 /**
  * @author xiaoyu
  */
+@Slf4j
 @Service
 public class TxCompensationServiceImpl implements TxCompensationService {
 
@@ -214,6 +216,7 @@ public class TxCompensationServiceImpl implements TxCompensationService {
             }
         } catch (InterruptedException e) {
             LogUtil.error(LOGGER, "补偿命令提交队列失败：{}", e::getMessage);
+            log.error(e.getMessage(),e);
             return false;
 
         }
@@ -307,8 +310,9 @@ public class TxCompensationServiceImpl implements TxCompensationService {
                         }
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
                     LogUtil.error(LOGGER, "执行补偿命令失败：{}", e::getMessage);
+                    log.error("错误堆栈",e);
+
                 }
             }
 

@@ -20,7 +20,6 @@ package com.rains.transaction.core.service.handler;
 import com.rains.transaction.core.service.TxManagerMessageService;
 import com.rains.transaction.core.service.TxTransactionHandler;
 import com.rains.transaction.common.bean.TxTransactionInfo;
-import com.rains.transaction.common.enums.NettyResultEnum;
 import com.rains.transaction.common.enums.TransactionRoleEnum;
 import com.rains.transaction.common.enums.TransactionStatusEnum;
 import com.rains.transaction.common.holder.DateUtils;
@@ -133,7 +132,7 @@ public class ActorTxTransactionHandler implements TxTransactionHandler {
 
                                     } else {
                                         LogUtil.info(LOGGER, "事务组id：{}，自动超时进行回滚!", info::getTxGroupId);
-                                        waitTask.setAsyncCall(objects -> NettyResultEnum.TIME_OUT.getCode());
+                                        waitTask.setAsyncCall(objects -> TransactionStatusEnum.TIME_OUT.getCode());
                                         waitTask.signal();
                                     }
                                     LOGGER.error("============通过定时任务来唤醒线程！事务状态为:{}", transactionGroupStatus);

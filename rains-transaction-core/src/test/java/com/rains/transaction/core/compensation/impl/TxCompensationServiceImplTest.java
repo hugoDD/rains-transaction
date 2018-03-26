@@ -3,6 +3,7 @@ package com.rains.transaction.core.compensation.impl;
 import com.rains.transaction.core.compensation.command.TxCompensationAction;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean;
 
 public class TxCompensationServiceImplTest {
 

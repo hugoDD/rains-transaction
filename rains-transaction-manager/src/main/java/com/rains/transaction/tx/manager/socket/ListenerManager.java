@@ -1,32 +1,23 @@
-/*
- *
- * Copyright 2017-2018 549477611@qq.com(xiaoyu)
- *
- * This copyrighted material is made available to anyone wishing to use, modify,
- * copy, or redistribute it subject to the terms and conditions of the GNU
- * Lesser General Public License, as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
- *
- */
+
 package com.rains.transaction.tx.manager.socket;
 
-import com.google.common.collect.Lists;
 import com.rains.transaction.common.notify.CallbackListener;
+import com.rains.transaction.tx.manager.exception.TxManagerRuntimeException;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * @author xiaoyu
+/*
+ * 文 件 名:  ListenerManager
+ * 版    权:  Copyright (c) 2018 com.rains.hugosz
+ * 描    述:  事务参与者事务注册队列
+ * 创 建 人:  hugosz
+ * 创建时间:  2018/3/23  15:36
  */
 public class ListenerManager {
 
@@ -43,16 +34,18 @@ public class ListenerManager {
      * 当前连接数
      */
 
-    private int nowConnection;
+    private AtomicInteger nowConnection = new AtomicInteger();
 
     /**
      * 允许连接请求 true允许 false拒绝
      */
     private volatile boolean allowConnection = true;
 
-    private List<CallbackListener> clients = Lists.newCopyOnWriteArrayList();
 
-    private static ListenerManager manager = new ListenerManager();
+    private Map<String,CallbackListener> clientsMap =new ConcurrentHashMap<>();
+
+
+    private final static ListenerManager manager = new ListenerManager();
 
     private ListenerManager() {
     }
@@ -63,26 +56,28 @@ public class ListenerManager {
 
 
     public CallbackListener getChannelByModelName(String name) {
-        if (CollectionUtils.isNotEmpty(clients)) {
-            final Optional<CallbackListener> first = clients.stream().filter(client ->
-                    Objects.equals(client.getModeName(), name))
-                    .findFirst();
-            return first.orElse(null);
+        if (Objects.nonNull(clientsMap)) {
+            return clientsMap.get(name);
         }
         return null;
     }
 
 
     public void addClient(CallbackListener client) {
-        clients.add(client);
-        nowConnection = clients.size();
-        allowConnection = (maxConnection != nowConnection);
+       // clients.add(client);
+        if(Objects.isNull(client)){
+            throw new TxManagerRuntimeException("callbackListtener client为空");
+        }
+        if(!allowConnection){
+            throw new TxManagerRuntimeException("callbackListtener client缓存队列已满");
+        }
+        clientsMap.put(client.getModeName(),client);
+        allowConnection = (maxConnection != nowConnection.incrementAndGet());
     }
 
     public void removeClient(CallbackListener client) {
-        clients.remove(client);
-        nowConnection = clients.size();
-        allowConnection = (maxConnection != nowConnection);
+        clientsMap.remove(client.getModeName());
+        allowConnection = (maxConnection != nowConnection.decrementAndGet());
     }
 
 
@@ -91,7 +86,7 @@ public class ListenerManager {
     }
 
     public int getNowConnection() {
-        return nowConnection;
+        return nowConnection.get();
     }
 
     public boolean isAllowConnection() {

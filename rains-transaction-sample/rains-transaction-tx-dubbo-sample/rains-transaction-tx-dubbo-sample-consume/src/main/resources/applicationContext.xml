@@ -16,9 +16,7 @@
     <aop:aspectj-autoproxy expose-proxy="true"/>
     <context:component-scan base-package="com.rains.transaction.*"/>
     <bean id="txTransactionBootstrap" class="com.rains.transaction.core.bootstrap.TxTransactionBootstrap">
-        <property name="txManagerUrl" value="http://192.168.1.73:8761"/>
         <property name="serializer" value="kryo"/>
-        <property name="nettySerializer" value="kryo"/>
         <property name="blockingQueueType" value="Linked"/>
         <property name="compensation" value="true"/>
         <property name="compensationCacheType" value="db"/>

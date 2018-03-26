@@ -34,7 +34,7 @@ public class TxConfig {
     /**
      * netty 传输的序列化协议
      */
-    private String nettySerializer = "kryo";
+   // private String nettySerializer = "kryo";
 
 
     /**
@@ -52,12 +52,12 @@ public class TxConfig {
     /**
      * netty 工作线程大小
      */
-    private int nettyThreadMax = Runtime.getRuntime().availableProcessors() << 1;
+   // private int nettyThreadMax = Runtime.getRuntime().availableProcessors() << 1;
 
     /**
      * 心跳时间 默认10秒
      */
-    private int heartTime = 10;
+   // private int heartTime = 10;
 
 
     /**
@@ -115,10 +115,7 @@ public class TxConfig {
     private int recoverDelayTime = 60;
 
 
-    /**
-     * txManagerUrl服务地址
-     */
-    private String txManagerUrl;
+
 
 
     /**

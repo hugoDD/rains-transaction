@@ -21,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
-import com.rains.transaction.tx.manager.config.NettyConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -52,17 +51,6 @@ import java.util.Map;
 public class TxManagerConfiguration {
 
 
-    @Configuration
-    static class NettyConfiguration {
-
-        @Bean
-        @ConfigurationProperties("tx.manager.netty")
-        public NettyConfig getNettyConfig() {
-            return new NettyConfig();
-        }
-
-
-    }
 
 
     @Configuration

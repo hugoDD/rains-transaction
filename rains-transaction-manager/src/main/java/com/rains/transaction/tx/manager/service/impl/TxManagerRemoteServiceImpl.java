@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -161,8 +162,7 @@ public class TxManagerRemoteServiceImpl implements TxManagerRemoteService {
                 .filter(item -> item.getRole() == TransactionRoleEnum.ACTOR.getCode())
                 .collect(Collectors.groupingBy(m -> m.getTmDomain()));
 
-
-        if (Objects.isNull(listMap)) {
+        if (Objects.isNull(listMap) || listMap.isEmpty()) {
             LogUtil.info(LOGGER, "事务组id:{},提交失败！数据不完整", () -> groupId);
             return false;
         }

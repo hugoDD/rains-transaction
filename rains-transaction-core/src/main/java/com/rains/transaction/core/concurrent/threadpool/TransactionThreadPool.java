@@ -32,8 +32,12 @@ import javax.annotation.PostConstruct;
 import java.util.concurrent.*;
 import java.util.function.Supplier;
 
-/**
- * @author xiaoyu
+/*
+ * 文 件 名:  TransactionThreadPool
+ * 版    权:  Copyright (c) 2018 com.rains.hugosz
+ * 描    述:  初始化事务运行线程池,根据配置选择不同的有界阻塞工作队列的容器,
+ * 创 建 人:  hugosz
+ * 创建时间:  2018/3/23  11:04
  */
 @Component
 public class TransactionThreadPool {
@@ -69,6 +73,11 @@ public class TransactionThreadPool {
 
     }
 
+    /**
+    *@Author: hugosz
+    *@Description: 线程池的工作队列满时,处理的策略
+    *@Date:  2018/3/23
+    */
     private RejectedExecutionHandler createPolicy() {
         RejectedPolicyTypeEnum rejectedPolicyType = RejectedPolicyTypeEnum.fromString(txConfig.getRejectPolicy());
 

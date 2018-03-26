@@ -21,11 +21,20 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-/**
- * @author xiaoyu
+/*
+ * 文 件 名:  TransactionStatusEnum
+ * 版    权:  Copyright (c) 2018 com.rains.hugosz
+ * 描    述:  事务状态
+ * 创 建 人:  hugosz
+ * 创建时间:  2018/3/23  14:29
  */
-
 public enum TransactionStatusEnum {
+
+
+    /**
+     * 事务超时状态
+     */
+    TIME_OUT(-1, "tmManager未连接或者响应超时！"),
 
     /**
      * Rollback transaction status enum.
@@ -62,6 +71,8 @@ public enum TransactionStatusEnum {
      * Lock transaction status enum.
      */
     LOCK(6, "锁定");
+
+
 
 
     private int code;
