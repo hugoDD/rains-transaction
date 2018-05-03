@@ -17,7 +17,9 @@ import com.rains.transaction.tx.manager.spi.TransactionRecoverRepository;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
+import javax.annotation.Resource;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
@@ -30,11 +32,13 @@ import java.util.stream.Collectors;
  * 创 建 人:  hugosz
  * 创建时间:  2018/3/26  16:41
  */
+@Repository
 public class JdbcTransactionRecoverRepository extends AbstractJdbcRecoverRepository implements TransactionRecoverRepository {
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JdbcTransactionRecoverRepository.class);
 
+    @Resource
     private DruidDataSource dataSource;
 
 
@@ -164,7 +168,7 @@ public class JdbcTransactionRecoverRepository extends AbstractJdbcRecoverReposit
             final TransactionInvocation transactionInvocation = serializer.deSerialize(bytes, TransactionInvocation.class);
             recover.setTransactionInvocation(transactionInvocation);
         } catch (TransactionException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(),e);
         }
         return recover;
     }
@@ -177,28 +181,28 @@ public class JdbcTransactionRecoverRepository extends AbstractJdbcRecoverReposit
      */
     @Override
     public void init(String modelName, TxConfig txConfig) {
-        dataSource = new DruidDataSource();
-        final TxDbConfig txDbConfig = txConfig.getTxDbConfig();
-        dataSource.setUrl(txDbConfig.getUrl());
-        dataSource.setDriverClassName(txDbConfig.getDriverClassName());
-        dataSource.setUsername(txDbConfig.getUsername());
-        dataSource.setPassword(txDbConfig.getPassword());
-
-
-        dataSource.setInitialSize(txDbConfig.getInitialSize());
-        dataSource.setMaxActive(txDbConfig.getMaxActive());
-        dataSource.setMinIdle(txDbConfig.getMinIdle());
-        dataSource.setMaxWait(txDbConfig.getMaxWait());
-        dataSource.setValidationQuery(txDbConfig.getValidationQuery());
-        dataSource.setTestOnBorrow(txDbConfig.getTestOnBorrow());
-        dataSource.setTestOnReturn(txDbConfig.getTestOnReturn());
-        dataSource.setTestWhileIdle(txDbConfig.getTestWhileIdle());
-        dataSource.setPoolPreparedStatements(txDbConfig.getPoolPreparedStatements());
-        dataSource.setMaxPoolPreparedStatementPerConnectionSize(txDbConfig.getMaxPoolPreparedStatementPerConnectionSize());
+//        dataSource = new DruidDataSource();
+//        final TxDbConfig txDbConfig = txConfig.getTxDbConfig();
+//        dataSource.setUrl(txDbConfig.getUrl());
+//        dataSource.setDriverClassName(txDbConfig.getDriverClassName());
+//        dataSource.setUsername(txDbConfig.getUsername());
+//        dataSource.setPassword(txDbConfig.getPassword());
+//
+//
+//        dataSource.setInitialSize(txDbConfig.getInitialSize());
+//        dataSource.setMaxActive(txDbConfig.getMaxActive());
+//        dataSource.setMinIdle(txDbConfig.getMinIdle());
+//        dataSource.setMaxWait(txDbConfig.getMaxWait());
+//        dataSource.setValidationQuery(txDbConfig.getValidationQuery());
+//        dataSource.setTestOnBorrow(txDbConfig.getTestOnBorrow());
+//        dataSource.setTestOnReturn(txDbConfig.getTestOnReturn());
+//        dataSource.setTestWhileIdle(txDbConfig.getTestWhileIdle());
+//        dataSource.setPoolPreparedStatements(txDbConfig.getPoolPreparedStatements());
+//        dataSource.setMaxPoolPreparedStatementPerConnectionSize(txDbConfig.getMaxPoolPreparedStatementPerConnectionSize());
 
 
         this.tableName = RepositoryPathUtils.buildDbTableName(modelName);
-        executeUpdate(SqlHelper.buildCreateTableSql(tableName, txDbConfig.getDriverClassName()));
+        executeUpdate(SqlHelper.buildCreateTableSql(tableName, dataSource.getDbType()));
     }
 
 

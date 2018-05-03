@@ -1,20 +1,4 @@
-/*
- *
- * Copyright 2017-2018 549477611@qq.com(xiaoyu)
- *
- * This copyrighted material is made available to anyone wishing to use, modify,
- * copy, or redistribute it subject to the terms and conditions of the GNU
- * Lesser General Public License, as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
- *
- */
+
 package com.rains.transaction.core.service.handler;
 
 import com.rains.transaction.core.service.TxManagerMessageService;
@@ -43,8 +27,12 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledFuture;
 
-/**
- * @author xiaoyu
+/*
+ * 文 件 名:  ActorTxTransactionHandler
+ * 版    权:  Copyright (c) 2018 com.rains.hugosz
+ * 描    述:  事务参与者的事务处理
+ * 创 建 人:  hugosz
+ * 创建时间:  2018/3/28  15:35
  */
 @Component
 public class ActorTxTransactionHandler implements TxTransactionHandler {
@@ -175,7 +163,7 @@ public class ActorTxTransactionHandler implements TxTransactionHandler {
                                 }
                             } catch (Throwable throwable) {
                                 platformTransactionManager.rollback(transactionStatus);
-                                throwable.printStackTrace();
+                                LOGGER.error(throwable.getMessage(),throwable);
                             } finally {
                                 BlockTaskHelper.getInstance().removeByKey(waitKey);
                                 //删除本地补偿信息

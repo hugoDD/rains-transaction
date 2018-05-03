@@ -10,9 +10,8 @@ import com.rains.transaction.common.holder.DbTypeUtils;
 public abstract class AbstractJdbcRecoverRepository {
     public static class SqlHelper {
 
-        public static String buildCreateTableSql(String tableName, String driverClassName) {
+        public static String buildCreateTableSql(String tableName, String dbType) {
             String createTableSql;
-            String dbType = DbTypeUtils.buildByDriverClassName(driverClassName);
             switch (dbType) {
                 case "mysql": {
                     createTableSql = "CREATE TABLE `" + tableName + "` (\n" +

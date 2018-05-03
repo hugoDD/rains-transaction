@@ -21,6 +21,7 @@ import com.rains.transaction.tx.manager.spi.TransactionRecoverRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import redis.clients.jedis.*;
 
 import java.util.Date;
@@ -48,7 +49,11 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
 
     private String keyName;
 
-    private JedisClient jedisClient;
+
+    private RedisTemplate redisTemplate;
+
+
+  //  private JedisClient jedisClient;
 
 
     /**
@@ -61,7 +66,8 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
     public int create(TransactionRecover transactionRecover) {
         try {
             final String redisKey = buildRecoverKey(keyName, transactionRecover.getId());
-            jedisClient.set(redisKey, TransactionRecoverUtils.convert(transactionRecover, objectSerializer));
+            redisTemplate.opsForValue().set(redisKey,TransactionRecoverUtils.convert(transactionRecover, objectSerializer));
+           // jedisClient.set(redisKey, TransactionRecoverUtils.convert(transactionRecover, objectSerializer));
             return 1;
         } catch (Exception e) {
             throw new TransactionIoException(e);
@@ -78,7 +84,9 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
     public int remove(String id) {
         try {
             final String redisKey = buildRecoverKey(keyName, id);
-            return jedisClient.del(redisKey).intValue();
+            redisTemplate.delete(redisKey);
+           // return jedisClient.del(redisKey).intValue();
+            return 1;
         } catch (Exception e) {
             throw new TransactionIoException(e);
         }
@@ -97,7 +105,8 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
             transactionRecover.setVersion(transactionRecover.getVersion() + 1);
             transactionRecover.setLastTime(new Date());
             transactionRecover.setRetriedCount(transactionRecover.getRetriedCount() + 1);
-            final String result = jedisClient.set(redisKey, TransactionRecoverUtils.convert(transactionRecover, objectSerializer));
+            redisTemplate.opsForValue().set(redisKey,TransactionRecoverUtils.convert(transactionRecover, objectSerializer));
+          //  final String result = jedisClient.set(redisKey, TransactionRecoverUtils.convert(transactionRecover, objectSerializer));
             return 1;
         } catch (Exception e) {
             throw new TransactionRuntimeException(e);
@@ -116,7 +125,9 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
         try {
             final String redisKey = buildRecoverKey(keyName, id);
 
-            byte[] contents = jedisClient.get(redisKey.getBytes());
+            byte[] contents = (byte[]) redisTemplate.opsForValue().get(redisKey.getBytes());
+
+         //   byte[] contents = jedisClient.get(redisKey.getBytes());
 
             return TransactionRecoverUtils.transformBean(contents, objectSerializer);
         } catch (Exception e) {
@@ -133,9 +144,11 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
     public List<TransactionRecover> listAll() {
         try {
             List<TransactionRecover> transactions = Lists.newArrayList();
-            Set<byte[]> keys = jedisClient.keys((keyName + "*").getBytes());
+            Set<byte[]> keys =   redisTemplate.keys((keyName + "*").getBytes());
+           // Set<byte[]> keys = jedisClient.keys((keyName + "*").getBytes());
             for (final byte[] key : keys) {
-                byte[] contents = jedisClient.get(key);
+                byte[] contents = (byte[]) redisTemplate.opsForValue().get(key);
+               // byte[] contents = jedisClient.get(key);
                 if (contents != null) {
                     transactions.add(TransactionRecoverUtils.transformBean(contents, objectSerializer));
                 }
@@ -170,12 +183,12 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
     @Override
     public void init(String modelName, TxConfig txConfig) {
         keyName = RepositoryPathUtils.buildRedisKey(modelName);
-        final TxRedisConfig txRedisConfig = txConfig.getTxRedisConfig();
-        try {
-            buildJedisClient(txRedisConfig);
-        } catch (Exception e) {
-            LogUtil.error(LOGGER, "redis 初始化异常！请检查配置信息:{}", e::getMessage);
-        }
+       // final TxRedisConfig txRedisConfig = txConfig.getTxRedisConfig();
+//        try {
+//            buildJedisClient(txRedisConfig);
+//        } catch (Exception e) {
+//            LogUtil.error(LOGGER, "redis 初始化异常！请检查配置信息:{}", e::getMessage);
+//        }
     }
 
 
@@ -199,7 +212,7 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
         this.objectSerializer = objectSerializer;
     }
 
-    private void buildJedisClient(TxRedisConfig txRedisConfig) {
+    /*private void buildJedisClient(TxRedisConfig txRedisConfig) {
         JedisPool jedisPool;
         JedisPoolConfig config = new JedisPoolConfig();
         config.setMaxIdle(txRedisConfig.getMaxIdle());
@@ -232,6 +245,7 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
                     .map(HostAndPort::parseString).collect(Collectors.toSet());
             JedisCluster jedisCluster = new JedisCluster(hostAndPorts, config);
             jedisClient = new JedisClientCluster(jedisCluster);
+
         } else {
             if (StringUtils.isNoneBlank(txRedisConfig.getPassword())) {
                 jedisPool = new JedisPool(config, txRedisConfig.getHostName(), txRedisConfig.getPort(), txRedisConfig.getTimeOut(), txRedisConfig.getPassword());
@@ -241,7 +255,7 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
             jedisClient = new JedisClientSingle(jedisPool);
         }
 
-    }
+    }*/
 
     private  String buildRecoverKey(String keyPrefix, String id) {
         return String.join(":", keyPrefix, id);

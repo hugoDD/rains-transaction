@@ -145,4 +145,19 @@ public class TxConfig {
     private TxZookeeperConfig txZookeeperConfig;
 
 
+    public String getSerializer() {
+        return serializer;
+    }
+
+    public void setSerializer(String serializer) {
+        this.serializer = serializer;
+    }
+
+    public String getCompensationCacheType() {
+        return compensationCacheType;
+    }
+
+    public void setCompensationCacheType(String compensationCacheType) {
+        this.compensationCacheType = compensationCacheType;
+    }
 }

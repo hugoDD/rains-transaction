@@ -26,6 +26,7 @@ import com.rains.transaction.common.holder.RepositoryPathUtils;
 import com.rains.transaction.common.holder.TransactionRecoverUtils;
 import com.rains.transaction.common.serializer.ObjectSerializer;
 import com.rains.transaction.tx.manager.spi.TransactionRecoverRepository;
+import org.springframework.stereotype.Repository;
 
 
 import java.io.File;
@@ -45,6 +46,7 @@ import java.util.stream.Collectors;
  * 创 建 人:  hugosz
  * 创建时间:  2018/3/26  16:40
  */
+@Repository
 public class FileTransactionRecoverRepository implements TransactionRecoverRepository {
 
 

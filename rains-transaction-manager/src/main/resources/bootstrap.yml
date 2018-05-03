@@ -20,6 +20,15 @@ endpoints:
     sensitive: false
 
 
+spring:
+    datasource:
+        driver-class-name:  com.mysql.jdbc.Driver
+        url: jdbc:mysql://172.26.223.28:3306/tx?useUnicode=true&characterEncoding=utf8
+        username: mysqladmin
+        password: MPadmin
+
+
+#spring.data.mongodb.uri=mongodb://172.26.223.25:27017/config-db
 
 logging:
             level:
