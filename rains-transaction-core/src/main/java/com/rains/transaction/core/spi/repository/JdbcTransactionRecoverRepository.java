@@ -30,9 +30,9 @@ import com.rains.transaction.common.exception.TransactionRuntimeException;
 import com.rains.transaction.common.holder.RepositoryPathUtils;
 import com.rains.transaction.common.serializer.ObjectSerializer;
 import com.rains.transaction.core.helper.SqlHelper;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import java.sql.*;
 import java.util.*;
@@ -114,7 +114,7 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
         String selectSql = "select * from " + tableName + " where id=?";
 
         List<Map<String, Object>> list = executeQuery(selectSql);
-        if (CollectionUtils.isNotEmpty(list)) {
+        if (!CollectionUtils.isEmpty(list)) {
             return list.stream().filter(Objects::nonNull)
                     .map(this::buildByMap).collect(Collectors.toList()).get(0);
         }
@@ -131,7 +131,7 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
     public List<TransactionRecover> listAll() {
         String selectSql = "select * from " + tableName;
         List<Map<String, Object>> list = executeQuery(selectSql);
-        if (CollectionUtils.isNotEmpty(list)) {
+        if (!CollectionUtils.isEmpty(list)) {
             return list.stream().filter(Objects::nonNull)
                     .map(this::buildByMap).collect(Collectors.toList());
         }
@@ -154,7 +154,7 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
 
         List<Map<String, Object>> list = executeQuery(sb, date);
 
-        if (CollectionUtils.isNotEmpty(list)) {
+        if (!CollectionUtils.isEmpty(list)) {
             return list.stream().filter(Objects::nonNull)
                     .map(this::buildByMap).collect(Collectors.toList());
         }

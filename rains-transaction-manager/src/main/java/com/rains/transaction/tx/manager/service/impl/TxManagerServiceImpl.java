@@ -26,23 +26,15 @@ import com.rains.transaction.common.netty.bean.TxTransactionItem;
 import com.rains.transaction.tx.manager.config.Constant;
 import com.rains.transaction.tx.manager.service.TxManagerService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
-import javax.inject.Inject;
 import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author xiaoyu
@@ -76,7 +68,7 @@ public class TxManagerServiceImpl implements TxManagerService {
                     .add(CommonConstant.REDIS_KEY_SET, groupId, CommonConstant.REDIS_SCOPE);
 
             final List<TxTransactionItem> itemList = txTransactionGroup.getItemList();
-            if (CollectionUtils.isNotEmpty(itemList)) {
+            if (!CollectionUtils.isEmpty(itemList)) {
                 for (TxTransactionItem item : itemList) {
                     redisTemplate.opsForHash().put(cacheKey(groupId), item.getTaskKey(), item);
                 }

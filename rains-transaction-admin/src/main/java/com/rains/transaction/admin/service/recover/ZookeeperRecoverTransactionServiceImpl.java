@@ -30,7 +30,6 @@ import com.rains.transaction.common.exception.TransactionException;
 import com.rains.transaction.common.holder.DateUtils;
 import com.rains.transaction.common.holder.RepositoryPathUtils;
 import com.rains.transaction.common.serializer.ObjectSerializer;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
@@ -38,6 +37,7 @@ import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;

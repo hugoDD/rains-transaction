@@ -19,7 +19,7 @@
 package com.rains.transaction.admin.service.recover;
 
 
-import com.mongodb.WriteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.rains.transaction.admin.helper.ConvertHelper;
 import com.rains.transaction.admin.helper.PageHelper;
 import com.rains.transaction.admin.page.CommonPager;
@@ -31,12 +31,12 @@ import com.rains.transaction.common.bean.adapter.MongoAdapter;
 import com.rains.transaction.common.exception.TransactionRuntimeException;
 import com.rains.transaction.common.holder.DateUtils;
 import com.rains.transaction.common.holder.RepositoryPathUtils;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -101,7 +101,7 @@ public class MongoRecoverTransactionServiceImpl implements RecoverTransactionSer
         final List<MongoAdapter> mongoAdapters =
                 mongoTemplate.find(baseQuery, MongoAdapter.class, mongoTableName);
 
-        if (CollectionUtils.isNotEmpty(mongoAdapters)) {
+        if (!CollectionUtils.isEmpty(mongoAdapters)) {
             final List<TransactionRecoverVO> recoverVOS =
                     mongoAdapters
                             .stream()
@@ -156,9 +156,9 @@ public class MongoRecoverTransactionServiceImpl implements RecoverTransactionSer
         Update update = new Update();
         update.set("lastTime", DateUtils.getCurrentDateTime());
         update.set("retriedCount", retry);
-        final WriteResult writeResult = mongoTemplate.updateFirst(query, update,
+        final UpdateResult writeResult = mongoTemplate.updateFirst(query, update,
                 MongoAdapter.class, mongoTableName);
-        if (writeResult.getN() <= 0) {
+        if (writeResult.getModifiedCount() <= 0) {
             throw new TransactionRuntimeException("更新数据异常!");
         }
         return Boolean.TRUE;

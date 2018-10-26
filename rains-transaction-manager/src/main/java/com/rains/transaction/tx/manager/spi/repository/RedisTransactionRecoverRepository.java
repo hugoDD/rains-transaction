@@ -1,28 +1,19 @@
 
 package com.rains.transaction.tx.manager.spi.repository;
 
-import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.rains.transaction.common.bean.TransactionRecover;
 import com.rains.transaction.common.config.TxConfig;
-import com.rains.transaction.common.config.TxRedisConfig;
 import com.rains.transaction.common.enums.CompensationCacheTypeEnum;
 import com.rains.transaction.common.exception.TransactionIoException;
 import com.rains.transaction.common.exception.TransactionRuntimeException;
-import com.rains.transaction.common.holder.LogUtil;
-import com.rains.transaction.common.holder.RedisKeyUtils;
 import com.rains.transaction.common.holder.RepositoryPathUtils;
 import com.rains.transaction.common.holder.TransactionRecoverUtils;
-import com.rains.transaction.common.jedis.JedisClient;
-import com.rains.transaction.common.jedis.JedisClientCluster;
-import com.rains.transaction.common.jedis.JedisClientSingle;
 import com.rains.transaction.common.serializer.ObjectSerializer;
 import com.rains.transaction.tx.manager.spi.TransactionRecoverRepository;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import redis.clients.jedis.*;
 
 import java.util.Date;
 import java.util.List;
@@ -252,7 +243,7 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
             } else {
                 jedisPool = new JedisPool(config, txRedisConfig.getHostName(), txRedisConfig.getPort(), txRedisConfig.getTimeOut());
             }
-            jedisClient = new JedisClientSingle(jedisPool);
+            jedisClient = new JedisClientImpl(jedisPool);
         }
 
     }*/

@@ -30,12 +30,12 @@ import com.rains.transaction.common.holder.LogUtil;
 import com.rains.transaction.common.holder.RepositoryPathUtils;
 import com.rains.transaction.common.holder.TransactionRecoverUtils;
 import com.rains.transaction.common.serializer.ObjectSerializer;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -150,7 +150,7 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
         } catch (Exception e) {
             throw new TransactionIoException(e);
         }
-        if (CollectionUtils.isNotEmpty(zNodePaths)) {
+        if (!CollectionUtils.isEmpty(zNodePaths)) {
             transactionRecovers = zNodePaths.stream()
                     .filter(StringUtils::isNoneBlank)
                     .map(zNodePath -> {

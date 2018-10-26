@@ -14,13 +14,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
- */
+ *//*
+
 package com.rains.transaction.common.holder;
 
 
+*/
 /**
  * @author xiaoyu
- */
+ *//*
+
 public class ConfigUtils {
 
     public static String getString(String filePath, String key) {
@@ -39,3 +42,4 @@ public class ConfigUtils {
     }
 
 }
+*/

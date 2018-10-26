@@ -29,11 +29,11 @@ import com.rains.transaction.common.constant.CommonConstant;
 import com.rains.transaction.common.enums.TransactionRoleEnum;
 import com.rains.transaction.common.enums.TransactionStatusEnum;
 import com.rains.transaction.common.netty.bean.TxTransactionItem;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -96,7 +96,7 @@ public class RedisTxTransactionGroupServiceImpl implements TxTransactionGroupSer
                     .entries(String.format(CommonConstant.REDIS_PRE_FIX, key));
             final Collection<TxTransactionItem> values = entries.values();
             TxTransactionGroupVO groupVO = new TxTransactionGroupVO();
-            if (CollectionUtils.isNotEmpty(values)) {
+            if (!CollectionUtils.isEmpty(values)) {
                 final Optional<TxTransactionItem> first =
                         values.stream()
                                 .filter(item -> TransactionRoleEnum.GROUP.getCode() == item.getRole())

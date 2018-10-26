@@ -18,8 +18,6 @@
 package com.rains.transaction.core.helper;
 
 import com.rains.transaction.common.holder.RedisKeyUtils;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 
 /**
  * @author xiaoyu
@@ -35,9 +33,9 @@ public class RedisHelper {
     }
 
 
-    public static <T> T execute(JedisPool jedisPool, JedisCallback<T> callback) {
-        try (Jedis jedis = jedisPool.getResource()) {
-            return callback.doInJedis(jedis);
-        }
-    }
+//    public static <T> T execute(JedisPool jedisPool, JedisCallback<T> callback) {
+//        try (Jedis jedis = jedisPool.getResource()) {
+//            return callback.doInJedis(jedis);
+//        }
+//    }
 }

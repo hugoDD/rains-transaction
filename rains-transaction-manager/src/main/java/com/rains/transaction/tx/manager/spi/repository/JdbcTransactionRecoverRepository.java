@@ -1,25 +1,22 @@
 
 package com.rains.transaction.tx.manager.spi.repository;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import com.google.common.collect.Maps;
 import com.rains.transaction.common.bean.TransactionInvocation;
 import com.rains.transaction.common.bean.TransactionRecover;
 import com.rains.transaction.common.config.TxConfig;
-import com.rains.transaction.common.config.TxDbConfig;
 import com.rains.transaction.common.enums.CompensationCacheTypeEnum;
 import com.rains.transaction.common.exception.TransactionException;
 import com.rains.transaction.common.exception.TransactionRuntimeException;
-import com.rains.transaction.common.holder.RepositoryPathUtils;
 import com.rains.transaction.common.serializer.ObjectSerializer;
-
 import com.rains.transaction.tx.manager.spi.TransactionRecoverRepository;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
@@ -39,7 +36,7 @@ public class JdbcTransactionRecoverRepository extends AbstractJdbcRecoverReposit
     private static final Logger LOGGER = LoggerFactory.getLogger(JdbcTransactionRecoverRepository.class);
 
     @Resource
-    private DruidDataSource dataSource;
+    private DataSource dataSource;
 
 
     private String tableName;
@@ -106,7 +103,7 @@ public class JdbcTransactionRecoverRepository extends AbstractJdbcRecoverReposit
         String selectSql = "select * from " + tableName + " where id=?";
 
         List<Map<String, Object>> list = executeQuery(selectSql);
-        if (CollectionUtils.isNotEmpty(list)) {
+        if (!CollectionUtils.isEmpty(list)) {
             return list.stream().filter(Objects::nonNull)
                     .map(this::buildByMap).collect(Collectors.toList()).get(0);
         }
@@ -123,7 +120,7 @@ public class JdbcTransactionRecoverRepository extends AbstractJdbcRecoverReposit
     public List<TransactionRecover> listAll() {
         String selectSql = "select * from " + tableName;
         List<Map<String, Object>> list = executeQuery(selectSql);
-        if (CollectionUtils.isNotEmpty(list)) {
+        if (!CollectionUtils.isEmpty(list)) {
             return list.stream().filter(Objects::nonNull)
                     .map(this::buildByMap).collect(Collectors.toList());
         }
@@ -146,7 +143,7 @@ public class JdbcTransactionRecoverRepository extends AbstractJdbcRecoverReposit
 
         List<Map<String, Object>> list = executeQuery(sb, date);
 
-        if (CollectionUtils.isNotEmpty(list)) {
+        if (!CollectionUtils.isEmpty(list)) {
             return list.stream().filter(Objects::nonNull)
                     .map(this::buildByMap).collect(Collectors.toList());
         }
@@ -201,8 +198,10 @@ public class JdbcTransactionRecoverRepository extends AbstractJdbcRecoverReposit
 //        dataSource.setMaxPoolPreparedStatementPerConnectionSize(txDbConfig.getMaxPoolPreparedStatementPerConnectionSize());
 
 
-        this.tableName = RepositoryPathUtils.buildDbTableName(modelName);
-        executeUpdate(SqlHelper.buildCreateTableSql(tableName, dataSource.getDbType()));
+
+
+//        this.tableName = RepositoryPathUtils.buildDbTableName(modelName);
+//        executeUpdate(SqlHelper.buildCreateTableSql(tableName, dataSource.getDbType()));
     }
 
 

@@ -10,13 +10,12 @@ import com.rains.transaction.remote.service.TxManagerRemoteService;
 import com.rains.transaction.tx.manager.config.Address;
 import com.rains.transaction.tx.manager.service.TxManagerService;
 import com.rains.transaction.tx.manager.socket.ListenerManager;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -38,7 +37,7 @@ public class TxManagerRemoteServiceImpl implements TxManagerRemoteService {
     @Override
     public Boolean createGroup(TxTransactionGroup txTransactionGroup, CallbackListener listener) {
         final List<TxTransactionItem> items = txTransactionGroup.getItemList();
-        if (CollectionUtils.isNotEmpty(items)) {
+        if (!CollectionUtils.isEmpty(items)) {
             //String modelName = ctx.channel().remoteAddress().toString();
             String modelName = listener.getModeName();
             //这里创建事务组的时候，事务组也作为第一条数据来存储
@@ -100,7 +99,7 @@ public class TxManagerRemoteServiceImpl implements TxManagerRemoteService {
         try {
             txManagerService.updateTxTransactionItemStatus(groupId, groupId, TransactionStatusEnum.ROLLBACK.getCode(),null);
             final List<TxTransactionItem> txTransactionItems = txManagerService.listByTxGroupId(groupId);
-            if (CollectionUtils.isNotEmpty(txTransactionItems)) {
+            if (!CollectionUtils.isEmpty(txTransactionItems)) {
                 //过滤掉发起方的数据，发起方已经进行提交，不需要再通信进行
                 final Map<String, List<TxTransactionItem>> listMap = txTransactionItems.stream()
                         .filter(item -> item.getRole() == TransactionRoleEnum.ACTOR.getCode())
