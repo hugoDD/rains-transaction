@@ -28,12 +28,11 @@ import com.rains.transaction.admin.vo.TransactionRecoverVO;
 import com.rains.transaction.common.holder.DateUtils;
 import com.rains.transaction.common.holder.DbTypeUtils;
 import com.rains.transaction.common.holder.RepositoryPathUtils;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -90,7 +89,7 @@ public class JdbcRecoverTransactionServiceImpl implements RecoverTransactionServ
 
         final List<Map<String, Object>> mapList = jdbcTemplate.queryForList(sql);
 
-        if (CollectionUtils.isNotEmpty(mapList)) {
+        if (!CollectionUtils.isEmpty(mapList)) {
 
             pager.setDataList(mapList.stream().map(this::buildByMap).collect(Collectors.toList()));
         }

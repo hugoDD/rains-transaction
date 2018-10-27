@@ -18,7 +18,7 @@
 package com.rains.transaction.tx.manager.spring;
 
 import com.rains.transaction.tx.manager.config.Address;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
+import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
@@ -30,12 +30,12 @@ import java.net.UnknownHostException;
  * @author xiaoyu
  */
 @Component
-public class ApplicationStartListener implements ApplicationListener<EmbeddedServletContainerInitializedEvent> {
+public class ApplicationStartListener implements ApplicationListener<WebServerInitializedEvent> {
 
 
     @Override
-    public void onApplicationEvent(EmbeddedServletContainerInitializedEvent event) {
-        int port = event.getEmbeddedServletContainer().getPort();
+    public void onApplicationEvent(WebServerInitializedEvent event) {
+        int port = event.getWebServer().getPort();
         final String host = getHost();
         Address.getInstance()
                 .setHost(host)

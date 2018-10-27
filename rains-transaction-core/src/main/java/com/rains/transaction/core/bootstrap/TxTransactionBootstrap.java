@@ -20,13 +20,14 @@ package com.rains.transaction.core.bootstrap;
 import com.rains.transaction.core.helper.SpringBeanUtils;
 import com.rains.transaction.common.config.TxConfig;
 import com.rains.transaction.common.exception.TransactionRuntimeException;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 /**
  * @author xiaoyu
@@ -66,7 +67,7 @@ public class TxTransactionBootstrap extends TxConfig implements ApplicationConte
             return false;
         }
         if(txConfig.getCompensation()){
-            return StringUtils.isNotEmpty(txConfig.getCompensationCacheType());
+            return Objects.nonNull(txConfig.getCompensationCacheType());
         }
         return false;
     }

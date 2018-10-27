@@ -96,6 +96,12 @@ module.exports = {
         port: 9001,
         hot: true,
         disableHostCheck: true,
-        compress: true
+        compress: true,
+        proxy: {
+             "/admin": {    //需要代理的路径
+               target: "http://localhost:8080",  //需要代理的域名
+               changeOrigin: true  //必须配置为true，才能正确代理
+             }
+           }
     }
 };

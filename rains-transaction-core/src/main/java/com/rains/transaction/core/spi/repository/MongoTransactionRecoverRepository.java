@@ -20,7 +20,7 @@ package com.rains.transaction.core.spi.repository;
 import com.google.common.base.Splitter;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
-import com.mongodb.WriteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.rains.transaction.common.bean.TransactionInvocation;
 import com.rains.transaction.common.bean.TransactionRecover;
 import com.rains.transaction.common.bean.adapter.MongoAdapter;
@@ -35,7 +35,6 @@ import com.rains.transaction.common.holder.LogUtil;
 import com.rains.transaction.common.holder.RepositoryPathUtils;
 import com.rains.transaction.common.serializer.ObjectSerializer;
 import com.rains.transaction.core.spi.TransactionRecoverRepository;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoClientFactoryBean;
@@ -43,6 +42,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -124,8 +124,8 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
         update.set("lastTime", new Date());
         update.set("retriedCount", transactionRecover.getRetriedCount() + 1);
         update.set("version", transactionRecover.getVersion() + 1);
-        final WriteResult writeResult = template.updateFirst(query, update, MongoAdapter.class, collectionName);
-        if (writeResult.getN() <= 0) {
+        final UpdateResult writeResult = template.updateFirst(query, update, MongoAdapter.class, collectionName);
+        if (writeResult.getModifiedCount() <= 0) {
             throw new TransactionRuntimeException("更新数据异常!");
         }
         return 1;
@@ -181,7 +181,7 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
                         TransactionStatusEnum.ROLLBACK.getCode()));
         final List<MongoAdapter> mongoAdapterList =
                 template.find(query, MongoAdapter.class, collectionName);
-        if (CollectionUtils.isNotEmpty(mongoAdapterList)) {
+        if (!CollectionUtils.isEmpty(mongoAdapterList)) {
             return mongoAdapterList.stream().map(this::buildByCache).collect(Collectors.toList());
         }
 
@@ -204,7 +204,7 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
                 .addCriteria(Criteria.where("lastTime").lt(date));
         final List<MongoAdapter> mongoBeans =
                 template.find(query, MongoAdapter.class, collectionName);
-        if (CollectionUtils.isNotEmpty(mongoBeans)) {
+        if (!CollectionUtils.isEmpty(mongoBeans)) {
             return mongoBeans.stream().map(this::buildByCache).collect(Collectors.toList());
         }
         return null;

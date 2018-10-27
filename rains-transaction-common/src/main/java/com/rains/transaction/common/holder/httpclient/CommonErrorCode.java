@@ -19,7 +19,8 @@
 package com.rains.transaction.common.holder.httpclient;
 
 
-import org.apache.commons.lang3.StringUtils;
+
+import java.util.Objects;
 
 /**
  * 错误码定义类
@@ -62,7 +63,7 @@ public class CommonErrorCode {
     public static final String getErrorMsg(int code) {
         //获取错误信息
         String msg = System.getProperty(String.valueOf(code));
-        if (StringUtils.isBlank(msg)) {
+        if (Objects.isNull(msg)) {
             return "根据传入的错误码[" + code + "]没有找到相应的错误信息.";
         }
         return msg;

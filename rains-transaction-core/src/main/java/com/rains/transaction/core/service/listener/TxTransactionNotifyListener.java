@@ -6,7 +6,8 @@ import com.rains.transaction.common.notify.CallbackListener;
 import com.rains.transaction.core.concurrent.task.BlockTask;
 import com.rains.transaction.core.concurrent.task.BlockTaskHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
+import org.springframework.util.CollectionUtils;
+
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class TxTransactionNotifyListener implements CallbackListener {
     public boolean notify(TxTransactionGroup txTransactionGroup) {
         final List<TxTransactionItem> txTransactionItems = txTransactionGroup
                 .getItemList();
-        if (CollectionUtils.isNotEmpty(txTransactionItems)) {
+        if ( !CollectionUtils.isEmpty(txTransactionItems) ) {
             final TxTransactionItem item = txTransactionItems.get(0);
             log.info("唤醒task key :{}", item.getTaskKey());
             final BlockTask task = BlockTaskHelper.getInstance().getTask(item.getTaskKey());

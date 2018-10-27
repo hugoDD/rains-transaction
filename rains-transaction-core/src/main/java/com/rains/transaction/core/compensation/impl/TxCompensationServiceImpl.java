@@ -36,12 +36,12 @@ import com.rains.transaction.common.holder.LogUtil;
 import com.rains.transaction.common.netty.bean.TxTransactionGroup;
 import com.rains.transaction.common.netty.bean.TxTransactionItem;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
@@ -85,7 +85,7 @@ public class TxCompensationServiceImpl implements TxCompensationService {
                     LogUtil.debug(LOGGER, "compensate recover execute delayTime:{}", () -> txConfig.getCompensationRecoverTime());
                     final List<TransactionRecover> transactionRecovers =
                             transactionRecoverRepository.listAllByDelay(acquireData());
-                    if (CollectionUtils.isNotEmpty(transactionRecovers)) {
+                    if (Objects.nonNull(transactionRecovers)&&transactionRecovers.size()>0) {
                         for (TransactionRecover transactionRecover : transactionRecovers) {
                             if (transactionRecover.getRetriedCount() > txConfig.getRetryMax()) {
                                 LogUtil.error(LOGGER, "此事务超过了最大重试次数，不再进行重试：{}",
@@ -99,7 +99,7 @@ public class TxCompensationServiceImpl implements TxCompensationService {
                                 if (update > 0) {
                                     final TxTransactionGroup byTxGroupId = txManagerMessageService
                                             .findByTxGroupId(transactionRecover.getGroupId());
-                                    if (Objects.nonNull(byTxGroupId) && CollectionUtils.isNotEmpty(byTxGroupId.getItemList())) {
+                                    if (Objects.nonNull(byTxGroupId) && !CollectionUtils.isEmpty(byTxGroupId.getItemList())) {
                                         final Optional<TxTransactionItem> any = byTxGroupId.getItemList().stream()
                                                 .filter(item -> Objects.equals(item.getTaskKey(), transactionRecover.getGroupId()))
                                                 .findAny();

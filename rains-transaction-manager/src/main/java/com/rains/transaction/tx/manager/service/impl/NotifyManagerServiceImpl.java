@@ -9,12 +9,15 @@ import com.rains.transaction.tx.manager.config.Address;
 import com.rains.transaction.tx.manager.config.ExecutorMessageTool;
 import com.rains.transaction.tx.manager.service.NotifyManagerService;
 import com.rains.transaction.tx.manager.socket.ListenerManager;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -58,7 +61,7 @@ public class NotifyManagerServiceImpl implements NotifyManagerService {
     public boolean notifyRollBack(final String groupId,final Map<String, List<TxTransactionItem>> listMap) {
         List<TxTransactionItem> txTransactionItems = listMap.get(Address.getInstance().getDomain());
         try {
-            if (CollectionUtils.isNotEmpty(txTransactionItems)) {
+            if (!CollectionUtils.isEmpty(txTransactionItems)) {
                 final CompletableFuture[] cfs = txTransactionItems
                         .stream()
                         .map(item ->

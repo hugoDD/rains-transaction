@@ -18,38 +18,29 @@
 
 package com.rains.transaction.admin.spi;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import com.google.common.base.Splitter;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.rains.transaction.admin.service.RecoverTransactionService;
 import com.rains.transaction.admin.service.recover.*;
-import com.rains.transaction.common.jedis.JedisClient;
-import com.rains.transaction.common.jedis.JedisClientCluster;
-import com.rains.transaction.common.jedis.JedisClientSingle;
-import org.apache.commons.lang3.StringUtils;
+import com.rains.transaction.common.jedis.JedisClientImpl;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoClientFactoryBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
+import org.springframework.data.redis.core.RedisTemplate;
 
-import javax.sql.DataSource;
 import java.net.InetSocketAddress;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
 
 /**
  * @author xiaoyu
@@ -64,38 +55,38 @@ public class RecoverConfiguration {
     @Profile("db")
     static class JdbcRecoverConfiguration {
 
-        private final Environment env;
+//        private final Environment env;
+//
+//        @Autowired
+//        public JdbcRecoverConfiguration(Environment env) {
+//            this.env = env;
+//        }
 
-        @Autowired
-        public JdbcRecoverConfiguration(Environment env) {
-            this.env = env;
-        }
-
-        @Bean
-        public DataSource dataSource() {
-            DruidDataSource dataSource = new DruidDataSource();
-            dataSource.setDriverClassName(env.getProperty("recover.db.driver"));
-            dataSource.setUrl(env.getProperty("recover.db.url"));
-            //用户名
-            dataSource.setUsername(env.getProperty("recover.db.username"));
-            //密码
-            dataSource.setPassword(env.getProperty("recover.db.password"));
-            dataSource.setInitialSize(2);
-            dataSource.setMaxActive(20);
-            dataSource.setMinIdle(0);
-            dataSource.setMaxWait(60000);
-            dataSource.setValidationQuery("SELECT 1");
-            dataSource.setTestOnBorrow(false);
-            dataSource.setTestWhileIdle(true);
-            dataSource.setPoolPreparedStatements(false);
-            return dataSource;
-        }
+//        @Bean
+//        public DataSource dataSource() {
+//            DruidDataSource dataSource = new DruidDataSource();
+//            dataSource.setDriverClassName(env.getProperty("recover.db.driver"));
+//            dataSource.setUrl(env.getProperty("recover.db.url"));
+//            //用户名
+//            dataSource.setUsername(env.getProperty("recover.db.username"));
+//            //密码
+//            dataSource.setPassword(env.getProperty("recover.db.password"));
+//            dataSource.setInitialSize(2);
+//            dataSource.setMaxActive(20);
+//            dataSource.setMinIdle(0);
+//            dataSource.setMaxWait(60000);
+//            dataSource.setValidationQuery("SELECT 1");
+//            dataSource.setTestOnBorrow(false);
+//            dataSource.setTestWhileIdle(true);
+//            dataSource.setPoolPreparedStatements(false);
+//            return dataSource;
+//        }
 
         @Bean
         @Qualifier("jdbcTransactionRecoverService")
-        public RecoverTransactionService jdbcTransactionRecoverService() {
+        public RecoverTransactionService jdbcTransactionRecoverService(DataSourceProperties dataSourceProperties) {
             JdbcRecoverTransactionServiceImpl jdbcTransactionRecoverService = new JdbcRecoverTransactionServiceImpl();
-            jdbcTransactionRecoverService.setDbType(env.getProperty("recover.db.driver"));
+            jdbcTransactionRecoverService.setDbType(dataSourceProperties.getDriverClassName());
             return jdbcTransactionRecoverService;
         }
 
@@ -116,35 +107,8 @@ public class RecoverConfiguration {
 
         @Bean
         @Qualifier("redisTransactionRecoverService")
-        public RecoverTransactionService redisTransactionRecoverService() {
-
-            JedisPool jedisPool;
-            JedisPoolConfig config = new JedisPoolConfig();
-            JedisClient jedisClient;
-            final Boolean cluster = env.getProperty("recover.redis.cluster", Boolean.class);
-            if (cluster) {
-                final String clusterUrl = env.getProperty("recover.redis.clusterUrl");
-                final Set<HostAndPort> hostAndPorts = Splitter.on(clusterUrl)
-                        .splitToList(";").stream()
-                        .map(HostAndPort::parseString).collect(Collectors.toSet());
-                JedisCluster jedisCluster = new JedisCluster(hostAndPorts, config);
-                jedisClient = new JedisClientCluster(jedisCluster);
-            } else {
-                final String password = env.getProperty("recover.redis.password");
-                final String port = env.getProperty("recover.redis.port");
-                final String hostName = env.getProperty("recover.redis.hostName");
-                if (StringUtils.isNoneBlank(password)) {
-                    jedisPool = new JedisPool(config, hostName,
-                            Integer.parseInt(port), 30, password);
-                } else {
-                    jedisPool = new JedisPool(config, hostName,
-                            Integer.parseInt(port), 30);
-                }
-                jedisClient = new JedisClientSingle(jedisPool);
-
-            }
-
-            return new RedisRecoverTransactionServiceImpl(jedisClient);
+        public RecoverTransactionService redisTransactionRecoverService(RedisTemplate redisTemplate) {
+            return new RedisRecoverTransactionServiceImpl(new JedisClientImpl(redisTemplate));
         }
 
 

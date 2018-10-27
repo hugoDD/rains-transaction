@@ -30,9 +30,9 @@ import com.rains.transaction.common.bean.adapter.TransactionRecoverAdapter;
 import com.rains.transaction.common.holder.DateUtils;
 import com.rains.transaction.common.holder.RepositoryPathUtils;
 import com.rains.transaction.common.serializer.ObjectSerializer;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -88,7 +88,7 @@ public class FileRecoverTransactionServiceImpl implements RecoverTransactionServ
             path = new File(filePath);
             files = path.listFiles();
             final List<TransactionRecoverVO> all = findAll(files);
-            if (CollectionUtils.isNotEmpty(all)) {
+            if (!CollectionUtils.isEmpty(all)) {
                 final List<TransactionRecoverVO> collect =
                         all.stream().filter(Objects::nonNull)
                                 .filter(vo -> vo.getRetriedCount() < query.getRetry())

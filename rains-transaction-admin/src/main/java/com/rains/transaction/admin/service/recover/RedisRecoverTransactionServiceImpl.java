@@ -31,9 +31,9 @@ import com.rains.transaction.common.holder.DateUtils;
 import com.rains.transaction.common.holder.RepositoryPathUtils;
 import com.rains.transaction.common.jedis.JedisClient;
 import com.rains.transaction.common.serializer.ObjectSerializer;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;

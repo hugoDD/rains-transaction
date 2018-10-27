@@ -18,10 +18,11 @@
 
 package com.rains.transaction.common.jedis;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
+import org.springframework.data.redis.core.RedisTemplate;
 
+import java.util.Arrays;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>Description: .</p>
@@ -31,127 +32,103 @@ import java.util.Set;
  * @date 2017/10/26 14:50
  * @since JDK 1.8
  */
-public class JedisClientSingle implements JedisClient {
+public class JedisClientImpl implements JedisClient {
 
-    private JedisPool jedisPool;
+    private RedisTemplate redisTemplate;
 
 
-    public JedisClientSingle(JedisPool jedisPool) {
-        this.jedisPool = jedisPool;
+    public JedisClientImpl(RedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
     public String set(String key, String value) {
-        try (Jedis jedis = jedisPool.getResource()) {
-            return jedis.set(key, value);
-        }
-
+        redisTemplate.opsForValue().set(key,value);
+        return "OK";
     }
 
     @Override
     public String set(String key, byte[] value) {
-        try (Jedis jedis = jedisPool.getResource()) {
-            return jedis.set(key.getBytes(), value);
-        }
+        redisTemplate.opsForValue().set(key.getBytes(),value);
 
+        return "OK";
     }
 
     @Override
     public Long del(String... keys) {
-        try (Jedis jedis = jedisPool.getResource()) {
-            return jedis.del(keys);
-        }
+       return redisTemplate.delete(Arrays.asList(keys));
+
 
     }
 
     @Override
     public String get(String key) {
-        try (Jedis jedis = jedisPool.getResource()) {
-            return jedis.get(key);
-        }
+        return (String)redisTemplate.opsForValue().get(key);
+
 
     }
 
     @Override
     public byte[] get(byte[] key) {
-        try (Jedis jedis = jedisPool.getResource()) {
-            return jedis.get(key);
-        }
+       return(byte[]) redisTemplate.opsForValue().get(key);
+
     }
 
     @Override
     public Set<byte[]> keys(byte[] pattern) {
+       return redisTemplate.keys(pattern);
 
-        try (Jedis jedis = jedisPool.getResource()) {
-            return jedis.keys(pattern);
-        }
 
     }
 
     @Override
     public Set<String> keys(String key) {
-        try (Jedis jedis = jedisPool.getResource()) {
-            return jedis.keys(key);
-        }
+        return redisTemplate.keys(key);
+
     }
 
     @Override
     public Long hset(String key, String item, String value) {
-        try (Jedis jedis = jedisPool.getResource()) {
-            return jedis.hset(key, item, value);
-        }
+        redisTemplate.opsForHash().put(key,item,value);
 
+        return 1L;
     }
 
     @Override
     public String hget(String key, String item) {
-        try (Jedis jedis = jedisPool.getResource()) {
-            return jedis.hget(key, item);
-        }
+        return (String) redisTemplate.opsForHash().get(key,item);
     }
 
     @Override
     public Long hdel(String key, String item) {
-
-        try (Jedis jedis = jedisPool.getResource()) {
-            return jedis.hdel(key, item);
-        }
+       return redisTemplate.opsForHash().delete(key,item);
 
     }
 
     @Override
     public Long incr(String key) {
+       return redisTemplate.opsForValue().increment(key,1L);
 
-        try (Jedis jedis = jedisPool.getResource()) {
-            return jedis.incr(key);
-        }
 
     }
 
     @Override
     public Long decr(String key) {
+        return  redisTemplate.opsForValue().increment(key,-1L);
 
-        try (Jedis jedis = jedisPool.getResource()) {
-
-            return jedis.decr(key);
-        }
 
     }
 
     @Override
     public Long expire(String key, int second) {
+       Boolean b = redisTemplate.expire(key,second, TimeUnit.SECONDS);
 
-        try (Jedis jedis = jedisPool.getResource()) {
-            return jedis.expire(key, second);
-        }
-
+        return b?1L:0L;
     }
 
     @Override
     public Set<String> zrange(String key, long start, long end) {
-        try (Jedis jedis = jedisPool.getResource()) {
-            return jedis.zrange(key, start, end);
-        }
+       return redisTemplate.opsForZSet().range(key,start,end);
     }
 
 

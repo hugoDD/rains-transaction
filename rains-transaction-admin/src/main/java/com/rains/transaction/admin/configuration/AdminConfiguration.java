@@ -1,26 +1,9 @@
-/*
- *
- * Copyright 2017-2018 549477611@qq.com(xiaoyu)
- *
- * This copyrighted material is made available to anyone wishing to use, modify,
- * copy, or redistribute it subject to the terms and conditions of the GNU
- * Lesser General Public License, as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
- *
- */
+
 package com.rains.transaction.admin.configuration;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Maps;
 import com.rains.transaction.admin.interceptor.AuthInterceptor;
 import com.rains.transaction.common.enums.SerializeProtocolEnum;
 import com.rains.transaction.common.holder.ServiceBootstrap;
@@ -30,23 +13,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.core.env.MapPropertySource;
-import org.springframework.data.redis.connection.RedisClusterConfiguration;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import redis.clients.jedis.JedisPoolConfig;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.stream.StreamSupport;
@@ -54,19 +32,20 @@ import java.util.stream.StreamSupport;
 /**
  * <p>Description: .</p>
  *
- * @author xiaoyu(Myth)
+ * @author hugoDD
  * @version 1.0
  * @date 2017/10/23 21:08
  * @since JDK 1.8
  */
 @Configuration
+@EnableConfigurationProperties(AdminTxProperties.class)
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 public class AdminConfiguration {
 
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
+        return new WebMvcConfigurer() {
             /*   @Override
                public void addCorsMappings(CorsRegistry registry) {
                    registry.addMapping("/login*//*").allowedOrigins("*");
@@ -94,10 +73,10 @@ public class AdminConfiguration {
 
 
         @Bean
-        public ObjectSerializer objectSerializer() {
+        public ObjectSerializer objectSerializer(AdminTxProperties properties) {
 
             final SerializeProtocolEnum serializeProtocolEnum =
-                    SerializeProtocolEnum.acquireSerializeProtocol(env.getProperty("recover.serializer.support"));
+                    SerializeProtocolEnum.acquireSerializeProtocol(properties.getRecover().getSerializer());
             final ServiceLoader<ObjectSerializer> objectSerializers =
                     ServiceBootstrap.loadAll(ObjectSerializer.class);
 
@@ -137,31 +116,30 @@ public class AdminConfiguration {
         }
 
 
-        @Bean
-        @ConfigurationProperties(prefix = "tx.redis")
-        public JedisPoolConfig getRedisPoolConfig() {
-            return new JedisPoolConfig();
-        }
+//        @Bean
+//        @ConfigurationProperties(prefix = "tx.redis")
+//        public JedisPoolConfig getRedisPoolConfig() {
+//            return new JedisPoolConfig();
+//        }
 
-        @Bean
-        @ConfigurationProperties(prefix = "tx.redis")
-        public JedisConnectionFactory getConnectionFactory() {
+//        @Bean
+//        @ConfigurationProperties(prefix = "tx.redis")
+//        public JedisConnectionFactory getConnectionFactory() {
+//
+//            final Boolean cluster = env.getProperty("tx.redis.cluster", Boolean.class);
+//            if (cluster) {
+//                return new JedisConnectionFactory(getClusterConfiguration(),
+//                        getRedisPoolConfig());
+//            } else {
+//                return new JedisConnectionFactory(getRedisPoolConfig());
+//            }
+//        }
 
-            final Boolean cluster = env.getProperty("tx.redis.cluster", Boolean.class);
-            if (cluster) {
-                return new JedisConnectionFactory(getClusterConfiguration(),
-                        getRedisPoolConfig());
-            } else {
-                return new JedisConnectionFactory(getRedisPoolConfig());
-            }
-        }
 
-
-        @Bean
-        @SuppressWarnings("unchecked")
-        public RedisTemplate redisTemplate() {
+        @Bean("redisTemplate")
+        public RedisTemplate redisTemplate(RedisConnectionFactory redisConnectionFactory) {
             RedisTemplate redisTemplate = new StringRedisTemplate();
-            redisTemplate.setConnectionFactory(getConnectionFactory());
+            redisTemplate.setConnectionFactory(redisConnectionFactory);
 
             Jackson2JsonRedisSerializer jackson2JsonRedisSerializer =
                     new Jackson2JsonRedisSerializer(Object.class);
@@ -174,12 +152,12 @@ public class AdminConfiguration {
             redisTemplate.afterPropertiesSet();
             return redisTemplate;
         }
-
-        private RedisClusterConfiguration getClusterConfiguration() {
-            Map<String, Object> source = Maps.newHashMap();
-            source.put("spring.redis.cluster.nodes", env.getProperty("tx.redis.cluster.nodes"));
-            source.put("spring.redis.cluster.max-redirects", env.getProperty("tx.redis.cluster.redirects"));
-            return new RedisClusterConfiguration(new MapPropertySource("RedisClusterConfiguration", source));
-        }
+//
+//        private RedisClusterConfiguration getClusterConfiguration() {
+//            Map<String, Object> source = Maps.newHashMap();
+//            source.put("spring.redis.cluster.nodes", env.getProperty("tx.redis.cluster.nodes"));
+//            source.put("spring.redis.cluster.max-redirects", env.getProperty("tx.redis.cluster.redirects"));
+//            return new RedisClusterConfiguration(new MapPropertySource("RedisClusterConfiguration", source));
+//        }
     }
 }

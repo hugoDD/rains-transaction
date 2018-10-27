@@ -5,6 +5,8 @@ import com.alibaba.dubbo.config.ApplicationConfig;
 import com.rains.transaction.core.service.ModelNameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
+
 /*
  * 文 件 名:  DubboModelNameServiceImpl
  * 版    权:  Copyright (c) 2018 com.rains.hugosz

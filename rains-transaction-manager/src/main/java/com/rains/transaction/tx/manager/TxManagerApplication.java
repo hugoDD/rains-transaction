@@ -20,10 +20,8 @@ package com.rains.transaction.tx.manager;
 import com.alibaba.dubbo.config.*;
 import com.rains.transaction.common.notify.CallbackListener;
 import com.rains.transaction.remote.service.TxManagerRemoteService;
-import com.rains.transaction.tx.manager.service.impl.TxManagerRemoteServiceImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 

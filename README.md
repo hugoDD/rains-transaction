@@ -1,5 +1,7 @@
 rains-transaction
 ================
+![license](https://img.shields.io/badge/license-Apache--2.0-green.svg)
+[![Build Status](https://travis-ci.org/hugoDD/rains-transaction.svg?branch=master)](https://travis-ci.org/hugoDD/rains-transaction)
 
 rains-transaction是强一致性分布式事务，是基于二阶段提交+本地事务补偿机制来实现。
 
