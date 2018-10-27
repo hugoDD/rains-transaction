@@ -1,2 +1,308 @@
-webpackJsonp([6],{112:function(a,b,c){b=a.exports=c(4)(!0),b.push([a.i,"\n.allcover[data-v-76ec9151] {\n  position: absolute;\n  top: 0;\n  right: 0;\n}\n.ctt[data-v-76ec9151] {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n}\n.tb[data-v-76ec9151] {\n  position: absolute;\n  top: 50%;\n  transform: translateY(-50%);\n}\n.lr[data-v-76ec9151] {\n  position: absolute;\n  left: 50%;\n  transform: translateX(-50%);\n}\n.login_page[data-v-76ec9151] {\n  background-color: #324057;\n}\n.manage_tip[data-v-76ec9151] {\n  position: absolute;\n  width: 100%;\n  top: -100px;\n  left: 0;\n}\n.manage_tip p[data-v-76ec9151] {\n  font-size: 34px;\n  color: #fff;\n}\n.form_contianer[data-v-76ec9151] {\n  width: 320px;\n  height: 210px;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  margin-top: -105px;\n  margin-left: -160px;\n  padding: 25px;\n  border-radius: 5px;\n  text-align: center;\n  background-color: #fff;\n}\n.form_contianer .submit_btn[data-v-76ec9151] {\n  width: 100%;\n  font-size: 16px;\n}\n.tip[data-v-76ec9151] {\n  font-size: 12px;\n  color: red;\n}\n.form-fade-enter-active[data-v-76ec9151],\n.form-fade-leave-active[data-v-76ec9151] {\n  transition: all 1s;\n}\n.form-fade-enter[data-v-76ec9151],\n.form-fade-leave-active[data-v-76ec9151] {\n  transform: translate3d(0, -50px, 0);\n  opacity: 0;\n}\n","",{version:3,sources:["D:/Documents/projects/transaction-admin/src/page/login.vue"],names:[],mappings:";AAAA;EACE,mBAAmB;EACnB,OAAO;EACP,SAAS;CACV;AACD;EACE,mBAAmB;EACnB,SAAS;EACT,UAAU;EACV,iCAAiC;CAClC;AACD;EACE,mBAAmB;EACnB,SAAS;EACT,4BAA4B;CAC7B;AACD;EACE,mBAAmB;EACnB,UAAU;EACV,4BAA4B;CAC7B;AACD;EACE,0BAA0B;CAC3B;AACD;EACE,mBAAmB;EACnB,YAAY;EACZ,YAAY;EACZ,QAAQ;CACT;AACD;EACE,gBAAgB;EAChB,YAAY;CACb;AACD;EACE,aAAa;EACb,cAAc;EACd,mBAAmB;EACnB,SAAS;EACT,UAAU;EACV,mBAAmB;EACnB,oBAAoB;EACpB,cAAc;EACd,mBAAmB;EACnB,mBAAmB;EACnB,uBAAuB;CACxB;AACD;EACE,YAAY;EACZ,gBAAgB;CACjB;AACD;EACE,gBAAgB;EAChB,WAAW;CACZ;AACD;;EAEE,mBAAmB;CACpB;AACD;;EAEE,oCAAoC;EACpC,WAAW;CACZ",file:"login.vue",sourcesContent:[".allcover {\n  position: absolute;\n  top: 0;\n  right: 0;\n}\n.ctt {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n}\n.tb {\n  position: absolute;\n  top: 50%;\n  transform: translateY(-50%);\n}\n.lr {\n  position: absolute;\n  left: 50%;\n  transform: translateX(-50%);\n}\n.login_page {\n  background-color: #324057;\n}\n.manage_tip {\n  position: absolute;\n  width: 100%;\n  top: -100px;\n  left: 0;\n}\n.manage_tip p {\n  font-size: 34px;\n  color: #fff;\n}\n.form_contianer {\n  width: 320px;\n  height: 210px;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  margin-top: -105px;\n  margin-left: -160px;\n  padding: 25px;\n  border-radius: 5px;\n  text-align: center;\n  background-color: #fff;\n}\n.form_contianer .submit_btn {\n  width: 100%;\n  font-size: 16px;\n}\n.tip {\n  font-size: 12px;\n  color: red;\n}\n.form-fade-enter-active,\n.form-fade-leave-active {\n  transition: all 1s;\n}\n.form-fade-enter,\n.form-fade-leave-active {\n  transform: translate3d(0, -50px, 0);\n  opacity: 0;\n}\n"],sourceRoot:""}])},125:function(a,b,c){var d=c(112);"string"==typeof d&&(d=[[a.i,d,""]]),d.locals&&(a.exports=d.locals);var e=c(8)("7db14fd8",d,!1);d.locals||a.hot.accept(112,function(){var b=c(112);"string"==typeof b&&(b=[[a.i,b,""]]),e(b)}),a.hot.dispose(function(){e()})},126:function(a,b){"use strict";b.a={data:function(){return{loginForm:{username:"",password:""},rules:{username:[{required:!0,message:"\u8BF7\u8F93\u5165\u7528\u6237\u540D",trigger:"blur"}],password:[{required:!0,message:"\u8BF7\u8F93\u5165\u5BC6\u7801",trigger:"blur"}]},showLogin:!1,baseUrl:document.getElementById("serverIpAddress").href}},mounted:function(){this.showLogin=!0},computed:{},methods:{submitForm:function(){var a=this;this.$http.post(this.baseUrl+"/login",{userName:this.loginForm.username,password:this.loginForm.password}).then(function(b){!0==b.body.data?(a.$message({type:"success",message:"\u767B\u5F55\u6210\u529F"}),a.$router.push("manage")):!1==b.body.data&&a.$message({type:"error",message:"\u8BF7\u8F93\u5165\u6B63\u786E\u7684\u7528\u6237\u540D\u5BC6\u7801"}),console.log("success!")},function(b){a.$message({type:"error",message:b})})}},watch:{}}},127:function(a,b,c){"use strict";var d=function(){var a=this,b=a.$createElement,c=a._self._c||b;return c("div",{staticClass:"login_page fillcontain"},[c("transition",{attrs:{name:"form-fade",mode:"in-out"}},[c("section",{directives:[{name:"show",rawName:"v-show",value:a.showLogin,expression:"showLogin"}],staticClass:"form_contianer"},[c("div",{staticClass:"manage_tip"},[c("p",[a._v("Transaction Admin")])]),a._v(" "),c("el-form",{ref:"loginForm",attrs:{model:a.loginForm,rules:a.rules}},[c("el-form-item",{attrs:{prop:"username"}},[c("el-input",{attrs:{placeholder:"\u7528\u6237\u540D"},model:{value:a.loginForm.username,callback:function(b){a.$set(a.loginForm,"username",b)},expression:"loginForm.username"}},[c("span",[a._v("dsfsf")])])],1),a._v(" "),c("el-form-item",{attrs:{prop:"password"}},[c("el-input",{attrs:{type:"password",placeholder:"\u5BC6\u7801"},model:{value:a.loginForm.password,callback:function(b){a.$set(a.loginForm,"password",b)},expression:"loginForm.password"}})],1),a._v(" "),c("el-form-item",[c("el-button",{staticClass:"submit_btn",attrs:{type:"primary"},on:{click:function(){a.submitForm("loginForm")}}},[a._v("\u767B\u5F55")])],1)],1)],1)])],1)};d._withStripped=!0;var e={render:d,staticRenderFns:[]};b.a=e,a.hot.accept(),a.hot.data&&c(3).rerender("data-v-76ec9151",e)},30:function(a,b,c){"use strict";Object.defineProperty(b,"__esModule",{value:!0});var d=c(126),e=c(127),f=!1,g=c(7),h=g(d.a,e.a,!1,function(){f||c(125)},"data-v-76ec9151",null);h.options.__file="src\\page\\login.vue",h.esModule&&Object.keys(h.esModule).some(function(a){return"default"!==a&&"__"!==a.substr(0,2)})&&console.error("named exports are not supported in *.vue files."),function(){var b=c(3);b.install(c(0),!1);b.compatible&&(a.hot.accept(),a.hot.data?(b.reload("data-v-76ec9151",h.options)," + "):b.createRecord("data-v-76ec9151",h.options),a.hot.dispose(function(){f=!0}))}(),b["default"]=h.exports}});
+webpackJsonp([6],{
+
+/***/ 117:
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(4)(true);
+// imports
+
+
+// module
+exports.push([module.i, "\n.allcover[data-v-0548359a] {\n  position: absolute;\n  top: 0;\n  right: 0;\n}\n.ctt[data-v-0548359a] {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n}\n.tb[data-v-0548359a] {\n  position: absolute;\n  top: 50%;\n  transform: translateY(-50%);\n}\n.lr[data-v-0548359a] {\n  position: absolute;\n  left: 50%;\n  transform: translateX(-50%);\n}\n.login_page[data-v-0548359a] {\n  background-color: #324057;\n}\n.manage_tip[data-v-0548359a] {\n  position: absolute;\n  width: 100%;\n  top: -100px;\n  left: 0;\n}\n.manage_tip p[data-v-0548359a] {\n  font-size: 34px;\n  color: #fff;\n}\n.form_contianer[data-v-0548359a] {\n  width: 320px;\n  height: 210px;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  margin-top: -105px;\n  margin-left: -160px;\n  padding: 25px;\n  border-radius: 5px;\n  text-align: center;\n  background-color: #fff;\n}\n.form_contianer .submit_btn[data-v-0548359a] {\n  width: 100%;\n  font-size: 16px;\n}\n.tip[data-v-0548359a] {\n  font-size: 12px;\n  color: red;\n}\n.form-fade-enter-active[data-v-0548359a],\n.form-fade-leave-active[data-v-0548359a] {\n  transition: all 1s;\n}\n.form-fade-enter[data-v-0548359a],\n.form-fade-leave-active[data-v-0548359a] {\n  transform: translate3d(0, -50px, 0);\n  opacity: 0;\n}\n", "", {"version":3,"sources":["E:/u/git/hugoDD/rains-transaction/rains-transaction-dashboard/src/page/login.vue"],"names":[],"mappings":";AAAA;EACE,mBAAmB;EACnB,OAAO;EACP,SAAS;CACV;AACD;EACE,mBAAmB;EACnB,SAAS;EACT,UAAU;EACV,iCAAiC;CAClC;AACD;EACE,mBAAmB;EACnB,SAAS;EACT,4BAA4B;CAC7B;AACD;EACE,mBAAmB;EACnB,UAAU;EACV,4BAA4B;CAC7B;AACD;EACE,0BAA0B;CAC3B;AACD;EACE,mBAAmB;EACnB,YAAY;EACZ,YAAY;EACZ,QAAQ;CACT;AACD;EACE,gBAAgB;EAChB,YAAY;CACb;AACD;EACE,aAAa;EACb,cAAc;EACd,mBAAmB;EACnB,SAAS;EACT,UAAU;EACV,mBAAmB;EACnB,oBAAoB;EACpB,cAAc;EACd,mBAAmB;EACnB,mBAAmB;EACnB,uBAAuB;CACxB;AACD;EACE,YAAY;EACZ,gBAAgB;CACjB;AACD;EACE,gBAAgB;EAChB,WAAW;CACZ;AACD;;EAEE,mBAAmB;CACpB;AACD;;EAEE,oCAAoC;EACpC,WAAW;CACZ","file":"login.vue","sourcesContent":[".allcover {\n  position: absolute;\n  top: 0;\n  right: 0;\n}\n.ctt {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n}\n.tb {\n  position: absolute;\n  top: 50%;\n  transform: translateY(-50%);\n}\n.lr {\n  position: absolute;\n  left: 50%;\n  transform: translateX(-50%);\n}\n.login_page {\n  background-color: #324057;\n}\n.manage_tip {\n  position: absolute;\n  width: 100%;\n  top: -100px;\n  left: 0;\n}\n.manage_tip p {\n  font-size: 34px;\n  color: #fff;\n}\n.form_contianer {\n  width: 320px;\n  height: 210px;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  margin-top: -105px;\n  margin-left: -160px;\n  padding: 25px;\n  border-radius: 5px;\n  text-align: center;\n  background-color: #fff;\n}\n.form_contianer .submit_btn {\n  width: 100%;\n  font-size: 16px;\n}\n.tip {\n  font-size: 12px;\n  color: red;\n}\n.form-fade-enter-active,\n.form-fade-leave-active {\n  transition: all 1s;\n}\n.form-fade-enter,\n.form-fade-leave-active {\n  transform: translate3d(0, -50px, 0);\n  opacity: 0;\n}\n"],"sourceRoot":""}]);
+
+// exports
+
+
+/***/ }),
+
+/***/ 130:
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(117);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(8)("49e3a55c", content, false);
+// Hot Module Replacement
+if(true) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept(117, function() {
+     var newContent = __webpack_require__(117);
+     if(typeof newContent === 'string') newContent = [[module.i, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+
+/***/ 131:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+    data: function data() {
+        return {
+            loginForm: {
+                username: '',
+                password: ''
+            },
+            rules: {
+                username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+                password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+            },
+            showLogin: false,
+            baseUrl: document.getElementById('serverIpAddress').href
+
+        };
+    },
+    mounted: function mounted() {
+        this.showLogin = true;
+    },
+
+    computed: {},
+    methods: {
+        submitForm: function submitForm() {
+            var _this = this;
+
+            this.$http.post(this.baseUrl + '/login', {
+                userName: this.loginForm.username,
+                password: this.loginForm.password
+            }).then(function (response) {
+                if (response.body.data == true) {
+                    _this.$message({
+                        type: 'success',
+                        message: '登录成功'
+                    });
+                    _this.$router.push('manage');
+                } else if (response.body.data == false) {
+                    _this.$message({
+                        type: 'error',
+                        message: '请输入正确的用户名密码'
+                    });
+                }
+
+                console.log("success!");
+            }, function (response) {
+                _this.$message({
+                    type: 'error',
+                    message: response
+                });
+            });
+        }
+    },
+    watch: {}
+});
+
+/***/ }),
+
+/***/ 132:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "login_page fillcontain" },
+    [
+      _c("transition", { attrs: { name: "form-fade", mode: "in-out" } }, [
+        _c(
+          "section",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.showLogin,
+                expression: "showLogin"
+              }
+            ],
+            staticClass: "form_contianer"
+          },
+          [
+            _c("div", { staticClass: "manage_tip" }, [
+              _c("p", [_vm._v("Transaction Admin")])
+            ]),
+            _vm._v(" "),
+            _c(
+              "el-form",
+              {
+                ref: "loginForm",
+                attrs: { model: _vm.loginForm, rules: _vm.rules }
+              },
+              [
+                _c(
+                  "el-form-item",
+                  { attrs: { prop: "username" } },
+                  [
+                    _c(
+                      "el-input",
+                      {
+                        attrs: { placeholder: "用户名" },
+                        model: {
+                          value: _vm.loginForm.username,
+                          callback: function($$v) {
+                            _vm.$set(_vm.loginForm, "username", $$v)
+                          },
+                          expression: "loginForm.username"
+                        }
+                      },
+                      [_c("span", [_vm._v("dsfsf")])]
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "el-form-item",
+                  { attrs: { prop: "password" } },
+                  [
+                    _c("el-input", {
+                      attrs: { type: "password", placeholder: "密码" },
+                      model: {
+                        value: _vm.loginForm.password,
+                        callback: function($$v) {
+                          _vm.$set(_vm.loginForm, "password", $$v)
+                        },
+                        expression: "loginForm.password"
+                      }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "el-form-item",
+                  [
+                    _c(
+                      "el-button",
+                      {
+                        staticClass: "submit_btn",
+                        attrs: { type: "primary" },
+                        on: {
+                          click: function($event) {
+                            _vm.submitForm("loginForm")
+                          }
+                        }
+                      },
+                      [_vm._v("登录")]
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ])
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+if (true) {
+  module.hot.accept()
+  if (module.hot.data) {
+    __webpack_require__(3)      .rerender("data-v-0548359a", esExports)
+  }
+}
+
+/***/ }),
+
+/***/ 30:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_login_vue__ = __webpack_require__(131);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0548359a_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_login_vue__ = __webpack_require__(132);
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(130)
+}
+var normalizeComponent = __webpack_require__(7)
+/* script */
+
+/* template */
+
+/* template functional */
+  var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-0548359a"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_login_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0548359a_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_login_vue__["a" /* default */],
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "src\\page\\login.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (true) {(function () {
+  var hotAPI = __webpack_require__(3)
+  hotAPI.install(__webpack_require__(0), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0548359a", Component.options)
+  } else {
+    hotAPI.reload("data-v-0548359a", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+/* harmony default export */ __webpack_exports__["default"] = (Component.exports);
+
+
+/***/ })
+
+});
 //# sourceMappingURL=6.bundle.js.map

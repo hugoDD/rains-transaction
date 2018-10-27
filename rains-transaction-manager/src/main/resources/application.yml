@@ -1,6 +1,5 @@
 server:
   port: 8761
-  contextPath: /
   address: 0.0.0.0
 
 management:

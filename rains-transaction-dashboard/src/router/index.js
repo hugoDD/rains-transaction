@@ -32,11 +32,11 @@ export default new Router({
                 path: '/transactionGroupStatusList',
                 component: transactionGroupStatusList,
                 meta: ['事务组管理', '事务组信息列表'],
-            }, {
+            },/* {
                 path: '/adminSet',
                 component: adminSet,
                 meta: ['设置', '管理员设置'],
-            },  {
+            },*/  {
                 path: '/explain',
                 component: explain,
                 meta: ['说明', '说明'],

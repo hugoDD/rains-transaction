@@ -20,15 +20,14 @@ package com.rains.transaction.admin.controller;
 
 
 import com.rains.transaction.admin.annotation.Permission;
+import com.rains.transaction.admin.configuration.AdminTxProperties;
 import com.rains.transaction.admin.dto.RecoverDTO;
 import com.rains.transaction.admin.page.CommonPager;
 import com.rains.transaction.admin.query.RecoverTransactionQuery;
-import com.rains.transaction.admin.service.RecoverApplicationNameService;
 import com.rains.transaction.admin.service.RecoverTransactionService;
 import com.rains.transaction.admin.vo.TransactionRecoverVO;
 import com.rains.transaction.common.holder.httpclient.AjaxResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,15 +51,17 @@ public class RecoverTransactionController {
 
     private final RecoverTransactionService recoverTransactionService;
 
-    private final RecoverApplicationNameService recoverApplicationNameService;
 
-    @Value("${recover.retry.max}")
+
+    private AdminTxProperties adminTxProperties;
+
     private Integer recoverRetryMax;
 
     @Autowired
-    public RecoverTransactionController(RecoverTransactionService recoverTransactionService, RecoverApplicationNameService recoverApplicationNameService) {
+    public RecoverTransactionController(RecoverTransactionService recoverTransactionService,  AdminTxProperties properties) {
         this.recoverTransactionService = recoverTransactionService;
-        this.recoverApplicationNameService = recoverApplicationNameService;
+        this.recoverRetryMax = properties.getRecover().getRetry();
+        this.adminTxProperties = properties;
     }
 
     @Permission
@@ -96,7 +97,7 @@ public class RecoverTransactionController {
     @PostMapping(value = "/listAppName")
     @Permission
     public AjaxResponse listAppName() {
-        final List<String> list = recoverApplicationNameService.list();
+        final List<String> list = adminTxProperties.getRecover().getApplication();
         return AjaxResponse.success(list);
     }
 

@@ -18,7 +18,6 @@
 
 package com.rains.transaction.admin.spi;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import com.google.common.base.Splitter;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -29,6 +28,7 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -37,10 +37,8 @@ import org.springframework.data.mongodb.core.MongoClientFactoryBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import javax.sql.DataSource;
 import java.net.InetSocketAddress;
 import java.util.List;
-
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -57,38 +55,38 @@ public class RecoverConfiguration {
     @Profile("db")
     static class JdbcRecoverConfiguration {
 
-        private final Environment env;
+//        private final Environment env;
+//
+//        @Autowired
+//        public JdbcRecoverConfiguration(Environment env) {
+//            this.env = env;
+//        }
 
-        @Autowired
-        public JdbcRecoverConfiguration(Environment env) {
-            this.env = env;
-        }
-
-        @Bean
-        public DataSource dataSource() {
-            DruidDataSource dataSource = new DruidDataSource();
-            dataSource.setDriverClassName(env.getProperty("recover.db.driver"));
-            dataSource.setUrl(env.getProperty("recover.db.url"));
-            //用户名
-            dataSource.setUsername(env.getProperty("recover.db.username"));
-            //密码
-            dataSource.setPassword(env.getProperty("recover.db.password"));
-            dataSource.setInitialSize(2);
-            dataSource.setMaxActive(20);
-            dataSource.setMinIdle(0);
-            dataSource.setMaxWait(60000);
-            dataSource.setValidationQuery("SELECT 1");
-            dataSource.setTestOnBorrow(false);
-            dataSource.setTestWhileIdle(true);
-            dataSource.setPoolPreparedStatements(false);
-            return dataSource;
-        }
+//        @Bean
+//        public DataSource dataSource() {
+//            DruidDataSource dataSource = new DruidDataSource();
+//            dataSource.setDriverClassName(env.getProperty("recover.db.driver"));
+//            dataSource.setUrl(env.getProperty("recover.db.url"));
+//            //用户名
+//            dataSource.setUsername(env.getProperty("recover.db.username"));
+//            //密码
+//            dataSource.setPassword(env.getProperty("recover.db.password"));
+//            dataSource.setInitialSize(2);
+//            dataSource.setMaxActive(20);
+//            dataSource.setMinIdle(0);
+//            dataSource.setMaxWait(60000);
+//            dataSource.setValidationQuery("SELECT 1");
+//            dataSource.setTestOnBorrow(false);
+//            dataSource.setTestWhileIdle(true);
+//            dataSource.setPoolPreparedStatements(false);
+//            return dataSource;
+//        }
 
         @Bean
         @Qualifier("jdbcTransactionRecoverService")
-        public RecoverTransactionService jdbcTransactionRecoverService() {
+        public RecoverTransactionService jdbcTransactionRecoverService(DataSourceProperties dataSourceProperties) {
             JdbcRecoverTransactionServiceImpl jdbcTransactionRecoverService = new JdbcRecoverTransactionServiceImpl();
-            jdbcTransactionRecoverService.setDbType(env.getProperty("recover.db.driver"));
+            jdbcTransactionRecoverService.setDbType(dataSourceProperties.getDriverClassName());
             return jdbcTransactionRecoverService;
         }
 
