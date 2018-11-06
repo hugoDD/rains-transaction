@@ -1,23 +1,24 @@
 /*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Copyright 2017-2018 549477611@qq.com(xiaoyu)
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * This copyrighted material is made available to anyone wishing to use, modify,
- * copy, or redistribute it subject to the terms and conditions of the GNU
- * Lesser General Public License, as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.rains.transaction.tx.manager.spring;
 
 import com.rains.transaction.tx.manager.config.Address;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -27,11 +28,13 @@ import java.net.UnknownHostException;
 
 
 /**
- * @author xiaoyu
+ * @author dourx
+ * @version V1.0
+ * 创建日期 2018/11/6
  */
 @Component
 public class ApplicationStartListener implements ApplicationListener<WebServerInitializedEvent> {
-
+    private static final Logger logger = LoggerFactory.getLogger(ApplicationStartListener.class);
 
     @Override
     public void onApplicationEvent(WebServerInitializedEvent event) {
@@ -49,7 +52,7 @@ public class ApplicationStartListener implements ApplicationListener<WebServerIn
         try {
             return InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
             return "127.0.0.1";
         }
     }

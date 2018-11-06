@@ -193,15 +193,7 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
         return CompensationCacheTypeEnum.REDIS.getCompensationCacheType();
     }
 
-    /**
-     * 设置序列化信息
-     *
-     * @param objectSerializer 序列化实现
-     */
-    @Override
-    public void setSerializer(ObjectSerializer objectSerializer) {
-        this.objectSerializer = objectSerializer;
-    }
+
 
     /*private void buildJedisClient(TxRedisConfig txRedisConfig) {
         JedisPool jedisPool;

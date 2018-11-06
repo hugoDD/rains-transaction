@@ -20,6 +20,7 @@ package com.rains.transaction.tx.manager;
 import com.alibaba.dubbo.config.*;
 import com.rains.transaction.common.notify.CallbackListener;
 import com.rains.transaction.remote.service.TxManagerRemoteService;
+import com.rains.transaction.tx.manager.spi.repository.JdbcTransactionRecoverRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -38,7 +39,10 @@ public class TxManagerApplication {
         SpringApplication.run(TxManagerApplication.class, args);
 
     }
-
+    @Bean
+    public JdbcTransactionRecoverRepository jdbcTransactionRecoverRepository(){
+        return new JdbcTransactionRecoverRepository();
+    }
 
     @Bean
     public ServiceConfig<TxManagerRemoteService> serviceConfig(ApplicationConfig applicationConfig, RegistryConfig registryConfig, ProtocolConfig protocolConfig,TxManagerRemoteService txManagerRemoteService) {
@@ -82,5 +86,7 @@ public class TxManagerApplication {
         service.export();
         return service;
     }
+
+
 }
 

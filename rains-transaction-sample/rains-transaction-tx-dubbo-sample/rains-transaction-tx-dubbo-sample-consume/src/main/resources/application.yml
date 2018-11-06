@@ -17,10 +17,14 @@ mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
   mapper-locations: classpath:mybatis/mapper/*.xml
 
+tx:
+  manager:
+    serializer: kryo
 
 logging:
     level:
         root: error
+        org.springframework.boot: info
         org.springframework.web: info
         org.apache.ibatis: info
         com.rains.bonuspoint: info
@@ -31,3 +35,33 @@ logging:
     path: "./logs"
 
 
+# Base packages to scan Dubbo Components (e.g @Service , @Reference)
+dubbo:
+  scan:
+    basePackages: com.rains.transaction.tx.dubbo.sample
+  # Dubbo Config properties
+  ## ApplicationConfig Bean
+  application:
+    id: dubbo-consume
+    name: dubbo-consume
+    qos:
+      port: 22232
+      enable: false
+  ## ProtocolConfig Bean
+  protocol:
+    id: dubbo
+    name: dubbo
+    port: -1
+    accesslog: true
+#    status: server
+  ## RegistryConfig Bean
+  registry:
+    id: my-registry
+    address: zookeeper://172.26.223.27:2181?client=curator
+  # N/A
+
+endpoints:
+  health:
+    sensitive: false
+  dubbo:
+    enabled: false

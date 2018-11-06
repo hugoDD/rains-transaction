@@ -18,6 +18,7 @@
 package com.rains.transaction.tx.dubbo.sample.consume.service.impl;
 
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.rains.transaction.common.holder.IdWorkerUtils;
 import com.rains.transaction.core.annotation.TxTransaction;
 import com.rains.transaction.tx.dubbo.sample.consume.entity.Test1;
@@ -39,19 +40,16 @@ import java.util.Date;
 public class Test1ServiceImpl implements Test1Service {
 
 
-    private final Test1Mapper test1Mapper;
-
-    private final OrderService orderService;
-
-
-    private final StockService stockService;
-
     @Autowired
-    public Test1ServiceImpl(Test1Mapper test1Mapper, OrderService orderService, StockService stockService) {
-        this.test1Mapper = test1Mapper;
-        this.orderService = orderService;
-        this.stockService = stockService;
-    }
+    private  Test1Mapper test1Mapper;
+
+    @Reference
+    private  OrderService orderService;
+
+    @Reference
+    private  StockService stockService;
+
+
 
 
     /**

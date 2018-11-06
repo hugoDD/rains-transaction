@@ -19,7 +19,7 @@
 //
 //import com.google.common.base.Splitter;
 //import com.google.common.collect.Lists;
-//import com.rains.transaction.core.spi.TransactionRecoverRepository;
+//import com.rains.transaction.remote.service.TransactionRecoverService;
 //import com.rains.transaction.common.bean.TransactionRecover;
 //import com.rains.transaction.common.config.TxConfig;
 //import com.rains.transaction.common.config.TxRedisConfig;
@@ -50,7 +50,7 @@
 ///**
 // * @author xiaoyu
 // */
-//public class RedisTransactionRecoverRepository implements TransactionRecoverRepository {
+//public class RedisTransactionRecoverRepository implements TransactionRecoverService {
 //
 //    /**
 //     * logger

@@ -18,17 +18,17 @@
 package com.rains.transaction.tx.dubbo.sample.order.service.impl;
 
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.rains.transaction.core.annotation.TxTransaction;
 import com.rains.transaction.tx.dubbo.sample.order.api.entity.Order;
 import com.rains.transaction.tx.dubbo.sample.order.api.service.OrderService;
 import com.rains.transaction.tx.dubbo.sample.order.mapper.OrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * @author xiaoyu
  */
-@Service("orderService")
+@Service(timeout = 5000)
 public class OrderServiceImpl implements OrderService {
 
 

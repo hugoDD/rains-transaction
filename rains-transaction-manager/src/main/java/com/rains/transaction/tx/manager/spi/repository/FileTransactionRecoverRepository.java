@@ -46,7 +46,6 @@ import java.util.stream.Collectors;
  * 创 建 人:  hugosz
  * 创建时间:  2018/3/26  16:40
  */
-@Repository
 public class FileTransactionRecoverRepository implements TransactionRecoverRepository {
 
 
@@ -54,10 +53,7 @@ public class FileTransactionRecoverRepository implements TransactionRecoverRepos
     private String filePath;
     private ObjectSerializer serializer;
 
-    @Override
-    public void setSerializer(ObjectSerializer serializer) {
-        this.serializer = serializer;
-    }
+
 
     /**
      * 创建本地事务对象

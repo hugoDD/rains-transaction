@@ -1,0 +1,6 @@
+# Application Context Initializers
+org.springframework.context.ApplicationContextInitializer=\
+com.rains.transaction.core.bootstrap.TxTransactionBootstrap
+
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.rains.transaction.core.autoconfigure.TxClientAutoConfiguration

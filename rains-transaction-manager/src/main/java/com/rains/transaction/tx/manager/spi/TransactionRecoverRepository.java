@@ -5,7 +5,6 @@ package com.rains.transaction.tx.manager.spi;
 import com.rains.transaction.common.bean.TransactionRecover;
 import com.rains.transaction.common.config.TxConfig;
 import com.rains.transaction.common.exception.TransactionRuntimeException;
-import com.rains.transaction.common.serializer.ObjectSerializer;
 
 import java.util.Date;
 import java.util.List;
@@ -87,10 +86,5 @@ public interface TransactionRecoverRepository {
     String getScheme();
 
 
-    /**
-     * 设置序列化信息
-     *
-     * @param objectSerializer 序列化实现
-     */
-    void setSerializer(ObjectSerializer objectSerializer);
+
 }

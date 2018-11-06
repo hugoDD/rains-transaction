@@ -1,33 +1,30 @@
 /*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Copyright 2017-2018 549477611@qq.com(xiaoyu)
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * This copyrighted material is made available to anyone wishing to use, modify,
- * copy, or redistribute it subject to the terms and conditions of the GNU
- * Lesser General Public License, as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.rains.transaction.core.service.impl;
 
-import com.rains.transaction.core.helper.SpringBeanUtils;
-import com.rains.transaction.core.service.InitService;
-import com.rains.transaction.core.spi.TransactionRecoverRepository;
 import com.rains.transaction.common.config.TxConfig;
-import com.rains.transaction.common.enums.CompensationCacheTypeEnum;
 import com.rains.transaction.common.enums.SerializeProtocolEnum;
 import com.rains.transaction.common.exception.TransactionRuntimeException;
 import com.rains.transaction.common.holder.LogUtil;
 import com.rains.transaction.common.holder.ServiceBootstrap;
 import com.rains.transaction.common.serializer.ObjectSerializer;
 import com.rains.transaction.core.compensation.TxCompensationService;
+import com.rains.transaction.core.helper.SpringBeanUtils;
+import com.rains.transaction.core.service.InitService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +36,12 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.stream.StreamSupport;
 
-/**
- * @author xiaoyu
+/*
+ * 文 件 名:  InitServiceImpl.java
+ * 版    权:  Copyright (c) 2018 com.rains.hugosz
+ * 描    述:  初始化服务
+ * 创 建 人:  hugosz
+ * 创建时间:  2018/11/6
  */
 @Component
 @Transactional
@@ -86,23 +87,23 @@ public class InitServiceImpl implements InitService {
         final Optional<ObjectSerializer> serializer = StreamSupport.stream(objectSerializers.spliterator(), false)
                 .filter(objectSerializer ->
                         Objects.equals(objectSerializer.getScheme(), serializeProtocolEnum.getSerializeProtocol())).findFirst();
-
-
+        serializer.ifPresent(s->SpringBeanUtils.getInstance().registerBean(ObjectSerializer.class.getName(),s));
+        ;
         //spi  RecoverRepository support
-        final CompensationCacheTypeEnum compensationCacheTypeEnum = CompensationCacheTypeEnum.acquireCompensationCacheType(txConfig.getCompensationCacheType());
-        final ServiceLoader<TransactionRecoverRepository> recoverRepositories = ServiceBootstrap.loadAll(TransactionRecoverRepository.class);
+       // final CompensationCacheTypeEnum compensationCacheTypeEnum = CompensationCacheTypeEnum.acquireCompensationCacheType(txConfig.getCompensationCacheType());
+        //final ServiceLoader<TransactionRecoverService> recoverRepositories = ServiceBootstrap.loadAll(TransactionRecoverService.class);
 
 
-        final Optional<TransactionRecoverRepository> repositoryOptional =
-                StreamSupport.stream(recoverRepositories.spliterator(), false)
-                        .filter(recoverRepository ->
-                                Objects.equals(recoverRepository.getScheme(), compensationCacheTypeEnum.getCompensationCacheType()))
-                        .findFirst();
+//        final Optional<TransactionRecoverService> repositoryOptional =
+//                StreamSupport.stream(recoverRepositories.spliterator(), false)
+//                        .filter(recoverRepository ->
+//                                Objects.equals(recoverRepository.getScheme(), compensationCacheTypeEnum.getCompensationCacheType()))
+//                        .findFirst();
         //将compensationCache实现注入到spring容器
-        repositoryOptional.ifPresent(repository -> {
-            serializer.ifPresent(repository::setSerializer);
-            SpringBeanUtils.getInstance().registerBean(TransactionRecoverRepository.class.getName(), repository);
-        });
+//        repositoryOptional.ifPresent(repository -> {
+//            serializer.ifPresent(repository::setSerializer);
+//            SpringBeanUtils.getInstance().registerBean(TransactionRecoverService.class.getName(), repository);
+//        });
 
 
     }

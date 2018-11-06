@@ -7,16 +7,5 @@
        http://code.alibabatech.com/schema/dubbo
        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 
-    <dubbo:application name="dubbo-order"/>
-
-
-    <dubbo:registry protocol="zookeeper" address="172.26.223.27:2181"/>
-
-    <dubbo:protocol accesslog="true" name="dubbo" port="-1"/>
-
-
-    <dubbo:service interface="com.rains.transaction.tx.dubbo.sample.order.api.service.OrderService"
-                   ref="orderService"/>
-
-
+    <dubbo:service interface="com.rains.transaction.tx.manager.spi.TransactionRecoverRepository" ref="transactionRecoverRepository"></dubbo:service>
 </beans>

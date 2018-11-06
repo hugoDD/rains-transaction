@@ -1,18 +1,15 @@
 
 package com.rains.transaction.tx.manager.spi.repository;
 
-import com.google.common.collect.Maps;
 import com.rains.transaction.common.bean.TransactionInvocation;
 import com.rains.transaction.common.bean.TransactionRecover;
 import com.rains.transaction.common.config.TxConfig;
 import com.rains.transaction.common.enums.CompensationCacheTypeEnum;
-import com.rains.transaction.common.exception.TransactionException;
 import com.rains.transaction.common.exception.TransactionRuntimeException;
-import com.rains.transaction.common.serializer.ObjectSerializer;
 import com.rains.transaction.tx.manager.spi.TransactionRecoverRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -23,13 +20,12 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 /*
- * 文 件 名:  JdbcTransactionRecoverRepository
+ * 文 件 名:  JdbcTransactionRecoverRepository.java
  * 版    权:  Copyright (c) 2018 com.rains.hugosz
- * 描    述:  补偿事务DB存储
+ * 描    述:  事务数据库补偿操作
  * 创 建 人:  hugosz
- * 创建时间:  2018/3/26  16:41
+ * 创建时间:  2018/11/6
  */
-@Repository
 public class JdbcTransactionRecoverRepository extends AbstractJdbcRecoverRepository implements TransactionRecoverRepository {
 
 
@@ -38,37 +34,31 @@ public class JdbcTransactionRecoverRepository extends AbstractJdbcRecoverReposit
     @Resource
     private DataSource dataSource;
 
+    @Resource
+    private DataSourceProperties dataSourceProperties;
 
-    private String tableName;
 
-    private ObjectSerializer serializer;
+   private static final String TABLE_NAME ="tx_manager_recover";
 
-    @Override
-    public void setSerializer(ObjectSerializer serializer) {
-        this.serializer = serializer;
-    }
+
 
     @Override
     public int create(TransactionRecover recover) {
-        String sql = "insert into " + tableName + "(id,target_class,target_method,retried_count,create_time,last_time,version,group_id,task_id,invocation)" +
+        String sql = "insert into " + TABLE_NAME + "(id,model_name,target_class,target_method,retried_count,create_time,last_time,version,group_id,task_id,invocation)" +
                 " values(?,?,?,?,?,?,?,?,?,?)";
-        try {
             final TransactionInvocation transactionInvocation = recover.getTransactionInvocation();
-            final String className = transactionInvocation.getTargetClazz().getName();
+           // final String targetClass = transactionInvocation.getTargetClazz().getName();
             final String method = transactionInvocation.getMethod();
-            final byte[] serialize = serializer.serialize(transactionInvocation);
-            return executeUpdate(sql, recover.getId(), className, method, recover.getRetriedCount(), recover.getCreateTime(), recover.getLastTime(),
-                    recover.getVersion(), recover.getGroupId(), recover.getTaskId(), serialize);
+//            final byte[] serialize = serializer.serialize(transactionInvocation);
+            return executeUpdate(sql, recover.getId(),recover.getModelName(), recover.getTargetClass(), method, recover.getRetriedCount(), recover.getCreateTime(), recover.getLastTime(),
+                    recover.getVersion(), recover.getGroupId(), recover.getTaskId(), recover.getSerializer());
 
-        } catch (TransactionException e) {
-            e.printStackTrace();
-            return -1;
-        }
+
     }
 
     @Override
     public int remove(String id) {
-        String sql = "delete from " + tableName + " where id = ? ";
+        String sql = "delete from " + TABLE_NAME + " where id = ? ";
         return executeUpdate(sql, id);
     }
 
@@ -80,8 +70,7 @@ public class JdbcTransactionRecoverRepository extends AbstractJdbcRecoverReposit
      */
     @Override
     public int update(TransactionRecover transactionRecover) throws TransactionRuntimeException {
-
-        String sql = "update " + tableName +
+        String sql = "update " + TABLE_NAME +
                 " set last_time = ?,version =version+ 1,retried_count =retried_count+1 where id = ? and version=? ";
         int success = executeUpdate(sql, new Date(), transactionRecover.getId(), transactionRecover.getVersion());
         if (success <= 0) {
@@ -100,7 +89,7 @@ public class JdbcTransactionRecoverRepository extends AbstractJdbcRecoverReposit
     @Override
     public TransactionRecover findById(String id) {
 
-        String selectSql = "select * from " + tableName + " where id=?";
+        String selectSql = "select * from " + TABLE_NAME + " where id=?";
 
         List<Map<String, Object>> list = executeQuery(selectSql);
         if (!CollectionUtils.isEmpty(list)) {
@@ -118,7 +107,7 @@ public class JdbcTransactionRecoverRepository extends AbstractJdbcRecoverReposit
      */
     @Override
     public List<TransactionRecover> listAll() {
-        String selectSql = "select * from " + tableName;
+        String selectSql = "select * from " + TABLE_NAME;
         List<Map<String, Object>> list = executeQuery(selectSql);
         if (!CollectionUtils.isEmpty(list)) {
             return list.stream().filter(Objects::nonNull)
@@ -138,7 +127,7 @@ public class JdbcTransactionRecoverRepository extends AbstractJdbcRecoverReposit
     public List<TransactionRecover> listAllByDelay(Date date) {
 
         String sb = "select * from " +
-                tableName +
+                TABLE_NAME +
                 " where last_time <?";
 
         List<Map<String, Object>> list = executeQuery(sb, date);
@@ -154,6 +143,8 @@ public class JdbcTransactionRecoverRepository extends AbstractJdbcRecoverReposit
     private TransactionRecover buildByMap(Map<String, Object> map) {
         TransactionRecover recover = new TransactionRecover();
         recover.setId((String) map.get("id"));
+        recover.setModelName((String)map.get("model_name"));
+        recover.setTargetClass((String)map.get("target_class"));
         recover.setRetriedCount((Integer) map.get("retried_count"));
         recover.setCreateTime((Date) map.get("create_time"));
         recover.setLastTime((Date) map.get("last_time"));
@@ -161,12 +152,13 @@ public class JdbcTransactionRecoverRepository extends AbstractJdbcRecoverReposit
         recover.setGroupId((String) map.get("group_id"));
         recover.setVersion((Integer) map.get("version"));
         byte[] bytes = (byte[]) map.get("invocation");
-        try {
-            final TransactionInvocation transactionInvocation = serializer.deSerialize(bytes, TransactionInvocation.class);
-            recover.setTransactionInvocation(transactionInvocation);
-        } catch (TransactionException e) {
-            LOGGER.error(e.getMessage(),e);
-        }
+        recover.setSerializer(bytes);
+//        try {
+//            final TransactionInvocation transactionInvocation = serializer.deSerialize(bytes, TransactionInvocation.class);
+//            recover.setTransactionInvocation(transactionInvocation);
+//        } catch (TransactionException e) {
+//            LOGGER.error(e.getMessage(),e);
+//        }
         return recover;
     }
 
@@ -200,8 +192,8 @@ public class JdbcTransactionRecoverRepository extends AbstractJdbcRecoverReposit
 
 
 
-//        this.tableName = RepositoryPathUtils.buildDbTableName(modelName);
-//        executeUpdate(SqlHelper.buildCreateTableSql(tableName, dataSource.getDbType()));
+//        String TABLE_NAME = RepositoryPathUtils.buildDbTableName(modelName);
+//        executeUpdate(SqlHelper.buildCreateTableSql(TABLE_NAME, JdbcUtils.getDbType(dataSourceProperties.getUrl()).getDb()));
     }
 
 
@@ -247,7 +239,7 @@ public class JdbcTransactionRecoverRepository extends AbstractJdbcRecoverReposit
                 int columnCount = md.getColumnCount();
                 list = new ArrayList<>();
                 while (rs.next()) {
-                    Map<String, Object> rowData = Maps.newHashMap();
+                    Map<String, Object> rowData =new HashMap<>();
                     for (int i = 1; i <= columnCount; i++) {
                         rowData.put(md.getColumnName(i), rs.getObject(i));
                     }

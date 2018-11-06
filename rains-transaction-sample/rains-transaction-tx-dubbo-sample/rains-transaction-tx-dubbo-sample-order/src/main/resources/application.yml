@@ -30,3 +30,33 @@ logging:
 
     path: "./logs"
 
+# Base packages to scan Dubbo Components (e.g @Service , @Reference)
+dubbo:
+  scan:
+    basePackages: com.rains.transaction.tx.dubbo.sample
+  # Dubbo Config properties
+  ## ApplicationConfig Bean
+  application:
+    id: dubbo-order
+    name: dubbo-order
+    qos:
+      port: 22231
+      enable: false
+  ## ProtocolConfig Bean
+  protocol:
+    id: dubbo
+    name: dubbo
+    port: -1
+    accesslog: true
+  #    status: server
+  ## RegistryConfig Bean
+  registry:
+    id: my-registry
+    address: zookeeper://172.26.223.27:2181?client=curator
+  # N/A
+
+endpoints:
+  health:
+    sensitive: false
+  dubbo:
+    enabled: false

@@ -18,17 +18,17 @@
 package com.rains.transaction.tx.dubbo.sample.stock.service.impl;
 
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.rains.transaction.core.annotation.TxTransaction;
 import com.rains.transaction.tx.dubbo.sample.stock.api.entity.Stock;
 import com.rains.transaction.tx.dubbo.sample.stock.api.service.StockService;
 import com.rains.transaction.tx.dubbo.sample.stock.mapper.StockMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * @author xiaoyu
  */
-@Service("stockService")
+@Service(timeout = 5000)
 public class StockServiceImpl implements StockService {
 
 

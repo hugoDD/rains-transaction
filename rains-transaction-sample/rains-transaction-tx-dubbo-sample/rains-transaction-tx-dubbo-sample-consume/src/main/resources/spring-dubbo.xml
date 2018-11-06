@@ -10,9 +10,9 @@
     <dubbo:application name="dubbo-consume"/>
 
 
-    <dubbo:registry protocol="zookeeper" address="172.26.223.27:2181"/>
+    <!--<dubbo:registry protocol="zookeeper" address="172.26.223.27:2181"/>
 
-    <dubbo:protocol accesslog="true" name="dubbo" port="-1" />
+    <dubbo:protocol accesslog="true" name="dubbo" port="-1" />-->
 
 
     <dubbo:reference timeout="5000"
@@ -24,6 +24,6 @@
                      id="orderService"
                      retries="0" check="false"/>
 
-    <dubbo:reference interface="com.rains.transaction.remote.service.TxManagerRemoteService" id="txManagerRemoteService" />
+
 
 </beans>

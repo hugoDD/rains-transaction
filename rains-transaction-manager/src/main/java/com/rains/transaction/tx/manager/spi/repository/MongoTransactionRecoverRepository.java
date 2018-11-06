@@ -41,7 +41,6 @@ import java.util.stream.Collectors;
  * 创 建 人:  hugosz
  * 创建时间:  2018/3/26  16:44
  */
-@Repository
 public class MongoTransactionRecoverRepository implements TransactionRecoverRepository {
 
     /**
@@ -254,13 +253,5 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
         return CompensationCacheTypeEnum.MONGODB.getCompensationCacheType();
     }
 
-    /**
-     * 设置序列化信息
-     *
-     * @param objectSerializer 序列化实现
-     */
-    @Override
-    public void setSerializer(ObjectSerializer objectSerializer) {
-        this.objectSerializer = objectSerializer;
-    }
+
 }

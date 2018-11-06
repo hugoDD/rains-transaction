@@ -20,9 +20,10 @@ package com.rains.transaction.core.service;
 import com.rains.transaction.common.config.TxConfig;
 
 /**
- * @author xiaoyu
+ * @author dourx
+ * @version V1.0
+ * 创建日期 2018/11/5
  */
-@FunctionalInterface
 public interface InitService {
 
     /**

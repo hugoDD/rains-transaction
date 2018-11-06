@@ -72,6 +72,7 @@ spring:
 logging:
   level:
     root: error
+    org.springframework.boot: info
     org.springframework.web: info
     org.apache.ibatis: info
     com.rains.bonuspoint: info
@@ -126,7 +127,7 @@ dubbo:
   protocol:
     id: dubbo
     name: dubbo
-    port: 12345
+    port: -1
     status: server
   ## RegistryConfig Bean
   registry:

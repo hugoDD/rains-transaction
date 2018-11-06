@@ -1,31 +1,21 @@
 /*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Copyright 2017-2018 549477611@qq.com(xiaoyu)
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * This copyrighted material is made available to anyone wishing to use, modify,
- * copy, or redistribute it subject to the terms and conditions of the GNU
- * Lesser General Public License, as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.rains.transaction.core.compensation.impl;
 
-import com.rains.transaction.core.compensation.TxCompensationService;
-import com.rains.transaction.core.compensation.command.TxCompensationAction;
-import com.rains.transaction.core.concurrent.threadlocal.CompensationLocal;
-import com.rains.transaction.core.concurrent.threadpool.TransactionThreadPool;
-import com.rains.transaction.core.concurrent.threadpool.TxTransactionThreadFactory;
-import com.rains.transaction.core.helper.SpringBeanUtils;
-import com.rains.transaction.core.service.ModelNameService;
-import com.rains.transaction.core.service.TxManagerMessageService;
-import com.rains.transaction.core.spi.TransactionRecoverRepository;
 import com.rains.transaction.common.bean.TransactionInvocation;
 import com.rains.transaction.common.bean.TransactionRecover;
 import com.rains.transaction.common.config.TxConfig;
@@ -35,7 +25,15 @@ import com.rains.transaction.common.enums.TransactionStatusEnum;
 import com.rains.transaction.common.holder.LogUtil;
 import com.rains.transaction.common.netty.bean.TxTransactionGroup;
 import com.rains.transaction.common.netty.bean.TxTransactionItem;
-import lombok.extern.slf4j.Slf4j;
+import com.rains.transaction.core.compensation.TxCompensationService;
+import com.rains.transaction.core.compensation.command.TxCompensationAction;
+import com.rains.transaction.core.concurrent.threadlocal.CompensationLocal;
+import com.rains.transaction.core.concurrent.threadpool.TransactionThreadPool;
+import com.rains.transaction.core.concurrent.threadpool.TxTransactionThreadFactory;
+import com.rains.transaction.core.helper.SpringBeanUtils;
+import com.rains.transaction.core.service.ModelNameService;
+import com.rains.transaction.core.service.TxManagerMessageService;
+import com.rains.transaction.remote.service.TransactionRecoverService;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,10 +50,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.*;
 
-/**
- * @author xiaoyu
+/*
+ * 文 件 名:  TxCompensationServiceImpl.java
+ * 版    权:  Copyright (c) 2018 com.rains.hugosz
+ * 描    述:  补偿事务执行逻辑
+ * 创 建 人:  hugosz
+ * 创建时间:  2018/11/6
  */
-@Slf4j
 @Service
 public class TxCompensationServiceImpl implements TxCompensationService {
 
@@ -66,7 +67,7 @@ public class TxCompensationServiceImpl implements TxCompensationService {
     private static BlockingQueue<TxCompensationAction> QUEUE;
     private final ModelNameService modelNameService;
     private final TxManagerMessageService txManagerMessageService;
-    private TransactionRecoverRepository transactionRecoverRepository;
+    private TransactionRecoverService transactionRecoverService;
     private TxConfig txConfig;
     private ScheduledExecutorService scheduledExecutorService;
 
@@ -84,7 +85,7 @@ public class TxCompensationServiceImpl implements TxCompensationService {
                 .scheduleAtFixedRate(() -> {
                     LogUtil.debug(LOGGER, "compensate recover execute delayTime:{}", () -> txConfig.getCompensationRecoverTime());
                     final List<TransactionRecover> transactionRecovers =
-                            transactionRecoverRepository.listAllByDelay(acquireData());
+                            transactionRecoverService.listAllByDelay(acquireData());
                     if (Objects.nonNull(transactionRecovers)&&transactionRecovers.size()>0) {
                         for (TransactionRecover transactionRecover : transactionRecovers) {
                             if (transactionRecover.getRetriedCount() > txConfig.getRetryMax()) {
@@ -95,7 +96,7 @@ public class TxCompensationServiceImpl implements TxCompensationService {
                                 continue;
                             }
                             try {
-                                final int update = transactionRecoverRepository.update(transactionRecover);
+                                final int update = transactionRecoverService.update(transactionRecover);
                                 if (update > 0) {
                                     final TxTransactionGroup byTxGroupId = txManagerMessageService
                                             .findByTxGroupId(transactionRecover.getGroupId());
@@ -144,8 +145,8 @@ public class TxCompensationServiceImpl implements TxCompensationService {
         this.txConfig = txConfig;
         if (txConfig.getCompensation()) {
             final String modelName = modelNameService.findModelName();
-            transactionRecoverRepository = SpringBeanUtils.getInstance().getBean(TransactionRecoverRepository.class);
-            transactionRecoverRepository.init(modelName, txConfig);
+            transactionRecoverService = SpringBeanUtils.getInstance().getBean(TransactionRecoverService.class);
+            transactionRecoverService.init(modelName, txConfig);
             initCompensatePool();//初始化补偿操作的线程池
             compensate();//执行定时补偿
         }
@@ -173,7 +174,7 @@ public class TxCompensationServiceImpl implements TxCompensationService {
      */
     @Override
     public String save(TransactionRecover transactionRecover) {
-        final int rows = transactionRecoverRepository.create(transactionRecover);
+        final int rows = transactionRecoverService.create(transactionRecover);
         if (rows > 0) {
             return transactionRecover.getId();
         }
@@ -189,7 +190,7 @@ public class TxCompensationServiceImpl implements TxCompensationService {
      */
     @Override
     public boolean remove(String id) {
-        final int rows = transactionRecoverRepository.remove(id);
+        final int rows = transactionRecoverService.remove(id);
         return rows > 0;
     }
 
@@ -200,7 +201,7 @@ public class TxCompensationServiceImpl implements TxCompensationService {
      */
     @Override
     public void update(TransactionRecover transactionRecover) {
-        transactionRecoverRepository.update(transactionRecover);
+        transactionRecoverService.update(transactionRecover);
     }
 
     /**
@@ -216,7 +217,7 @@ public class TxCompensationServiceImpl implements TxCompensationService {
             }
         } catch (InterruptedException e) {
             LogUtil.error(LOGGER, "补偿命令提交队列失败：{}", e::getMessage);
-            log.error(e.getMessage(),e);
+            LOGGER.error(e.getMessage(),e);
             return false;
 
         }
@@ -245,7 +246,7 @@ public class TxCompensationServiceImpl implements TxCompensationService {
                     final Boolean success = txManagerMessageService.completeCommitTxTransaction(transactionRecover.getGroupId(),
                             transactionRecover.getTaskId(), TransactionStatusEnum.COMMIT.getCode());
                     if (success) {
-                        transactionRecoverRepository.remove(transactionRecover.getId());
+                        transactionRecoverService.remove(transactionRecover.getId());
                     }
 
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
@@ -311,7 +312,7 @@ public class TxCompensationServiceImpl implements TxCompensationService {
                     }
                 } catch (Exception e) {
                     LogUtil.error(LOGGER, "执行补偿命令失败：{}", e::getMessage);
-                    log.error("错误堆栈",e);
+                    LOGGER.error("错误堆栈",e);
 
                 }
             }

@@ -86,7 +86,7 @@
          </property>
 
       -->
-    <import resource="spring-dubbo.xml"/>
+   <!-- <import resource="spring-dubbo.xml"/>-->
 
 
 </beans>
