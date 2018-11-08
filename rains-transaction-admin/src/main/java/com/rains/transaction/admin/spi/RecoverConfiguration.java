@@ -19,8 +19,6 @@
 package com.rains.transaction.admin.spi;
 
 import com.google.common.base.Splitter;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
 import com.rains.transaction.admin.service.RecoverTransactionService;
 import com.rains.transaction.admin.service.recover.*;
 import com.rains.transaction.common.jedis.JedisClientImpl;
@@ -33,8 +31,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
-import org.springframework.data.mongodb.core.MongoClientFactoryBean;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.net.InetSocketAddress;
@@ -163,49 +159,49 @@ public class RecoverConfiguration {
 
     }
 
-    @Configuration
-    @Profile("mongo")
-    static class MongoRecoverConfiguration {
-
-        private final Environment env;
-
-        @Autowired
-        public MongoRecoverConfiguration(Environment env) {
-            this.env = env;
-        }
-
-        @Bean
-        @Qualifier("mongoTransactionRecoverService")
-        public RecoverTransactionService mongoTransactionRecoverService() {
-
-            MongoClientFactoryBean clientFactoryBean = new MongoClientFactoryBean();
-            MongoCredential credential = MongoCredential.createScramSha1Credential(
-                    env.getProperty("recover.mongo.userName"),
-                    env.getProperty("recover.mongo.dbName"),
-                    env.getProperty("recover.mongo.password").toCharArray());
-            clientFactoryBean.setCredentials(new MongoCredential[]{
-                    credential
-            });
-            List<String> urls = Splitter.on(",").trimResults().splitToList(env.getProperty("recover.mongo.url"));
-            ServerAddress[] sds = new ServerAddress[urls.size()];
-            for (int i = 0; i < sds.length; i++) {
-                List<String> adds = Splitter.on(":").trimResults().splitToList(urls.get(i));
-                InetSocketAddress address = new InetSocketAddress(adds.get(0), Integer.parseInt(adds.get(1)));
-                sds[i] = new ServerAddress(address);
-            }
-            clientFactoryBean.setReplicaSetSeeds(sds);
-
-            MongoTemplate mongoTemplate = null;
-            try {
-                clientFactoryBean.afterPropertiesSet();
-                mongoTemplate = new MongoTemplate(clientFactoryBean.getObject(), env.getProperty("recover.mongo.dbName"));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return new MongoRecoverTransactionServiceImpl(mongoTemplate);
-        }
-
-    }
+//    @Configuration
+//    @Profile("mongo")
+//    static class MongoRecoverConfiguration {
+//
+//        private final Environment env;
+//
+//        @Autowired
+//        public MongoRecoverConfiguration(Environment env) {
+//            this.env = env;
+//        }
+//
+//        @Bean
+//        @Qualifier("mongoTransactionRecoverService")
+//        public RecoverTransactionService mongoTransactionRecoverService() {
+//
+//            MongoClientFactoryBean clientFactoryBean = new MongoClientFactoryBean();
+//            MongoCredential credential = MongoCredential.createScramSha1Credential(
+//                    env.getProperty("recover.mongo.userName"),
+//                    env.getProperty("recover.mongo.dbName"),
+//                    env.getProperty("recover.mongo.password").toCharArray());
+//            clientFactoryBean.setCredentials(new MongoCredential[]{
+//                    credential
+//            });
+//            List<String> urls = Splitter.on(",").trimResults().splitToList(env.getProperty("recover.mongo.url"));
+//            ServerAddress[] sds = new ServerAddress[urls.size()];
+//            for (int i = 0; i < sds.length; i++) {
+//                List<String> adds = Splitter.on(":").trimResults().splitToList(urls.get(i));
+//                InetSocketAddress address = new InetSocketAddress(adds.get(0), Integer.parseInt(adds.get(1)));
+//                sds[i] = new ServerAddress(address);
+//            }
+//            clientFactoryBean.setReplicaSetSeeds(sds);
+//
+//            MongoTemplate mongoTemplate = null;
+//            try {
+//                clientFactoryBean.afterPropertiesSet();
+//                mongoTemplate = new MongoTemplate(clientFactoryBean.getObject(), env.getProperty("recover.mongo.dbName"));
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//            return new MongoRecoverTransactionServiceImpl(mongoTemplate);
+//        }
+//
+//    }
 
 }
