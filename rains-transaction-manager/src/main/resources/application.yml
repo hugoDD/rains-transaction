@@ -137,7 +137,7 @@ dubbo:
 
 endpoints:
   health:
-    sensitive: false
+    sensitive: true
   dubbo:
     enabled: true
 
