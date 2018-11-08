@@ -1,4 +1,4 @@
-package com.rains.transaction.tx.dubbo.conf;
+package com.rains.transaction.tx.dubbo.configuration;
 
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.ReferenceConfig;

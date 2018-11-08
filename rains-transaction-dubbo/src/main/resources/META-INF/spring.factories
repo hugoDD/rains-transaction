@@ -1,4 +1,4 @@
 
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.rains.transaction.tx.dubbo.conf.DubboTransactionAutoConfiguration
+com.rains.transaction.tx.dubbo.configuration.DubboTransactionAutoConfiguration
