@@ -49,7 +49,8 @@ public class DubboTransactionAutoConfiguration {
         referenceConfig.setApplication(applicationConfig);
         referenceConfig.setRegistry(registryConfig);
         referenceConfig.setInterface(TxManagerRemoteService.class);
-       // referenceConfig.setGroup("*");
+        referenceConfig.setProtocol("dubbo");
+        referenceConfig.setGroup("*");
         referenceConfig.setCluster("failsafe");
         referenceConfig.setTimeout(5000);
 

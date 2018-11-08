@@ -19,8 +19,11 @@ package com.rains.transaction.tx.manager;
 
 import com.alibaba.dubbo.config.*;
 import com.rains.transaction.common.notify.CallbackListener;
+import com.rains.transaction.common.util.IdGen;
 import com.rains.transaction.remote.service.TxManagerRemoteService;
 import com.rains.transaction.tx.manager.spi.repository.JdbcTransactionRecoverRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +38,7 @@ import java.util.List;
 @SpringBootApplication
 @EnableScheduling
 public class TxManagerApplication {
+    private static final Logger logger = LoggerFactory.getLogger(TxManagerApplication.class);
     public static void main(String[] args) {
         SpringApplication.run(TxManagerApplication.class, args);
 
@@ -51,6 +55,9 @@ public class TxManagerApplication {
         service.setInterface(TxManagerRemoteService.class);
         service.setRegistry(registryConfig);
         service.setRef(txManagerRemoteService);
+        long nextId = IdGen.get().nextId();
+        logger.info("注册 group is : {}",nextId);
+        service.setGroup("tx_"+ nextId);
         service.setProtocol(protocolConfig);
 
         List<MethodConfig> mothodConfigs = new ArrayList<>();
