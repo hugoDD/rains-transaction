@@ -122,7 +122,7 @@ dubbo:
     name: tx-manager
     qos:
       port: 22222
-      enable: false
+      enable: true
   ## ProtocolConfig Bean
   protocol:
     id: dubbo
@@ -139,7 +139,7 @@ endpoints:
   health:
     sensitive: false
   dubbo:
-    enabled: false
+    enabled: true
 
 #eureka:
 #  instance:

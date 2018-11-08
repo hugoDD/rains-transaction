@@ -1,9 +1,8 @@
 package com.rains.transaction.tx.dubbo.configuration;
 
-import com.alibaba.dubbo.config.ApplicationConfig;
-import com.alibaba.dubbo.config.ReferenceConfig;
-import com.alibaba.dubbo.config.RegistryConfig;
+import com.alibaba.dubbo.config.*;
 import com.alibaba.dubbo.config.utils.ReferenceConfigCache;
+import com.rains.transaction.common.notify.CallbackListener;
 import com.rains.transaction.core.interceptor.AbstractTxTransactionAspect;
 import com.rains.transaction.core.interceptor.TxTransactionInterceptor;
 import com.rains.transaction.core.recover.TransactionRecoverServiceStub;
@@ -20,6 +19,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author dourx
@@ -53,6 +55,21 @@ public class DubboTransactionAutoConfiguration {
         referenceConfig.setGroup("*");
         referenceConfig.setCluster("failsafe");
         referenceConfig.setTimeout(5000);
+
+        List<MethodConfig> methodConfigs = new ArrayList<>();
+
+        MethodConfig notifyCommitMethodConfig = new MethodConfig();
+        notifyCommitMethodConfig.setName("notifyCommit");
+        notifyCommitMethodConfig.setMerger("true");
+
+        MethodConfig notifyRollBackMethodConfig = new MethodConfig();
+        notifyRollBackMethodConfig.setName("notifyRollBack");
+        notifyRollBackMethodConfig.setMerger("true");
+
+        methodConfigs.add(notifyCommitMethodConfig);
+        methodConfigs.add(notifyRollBackMethodConfig);
+
+        referenceConfig.setMethods(methodConfigs);
 
         ReferenceConfigCache cache = ReferenceConfigCache.getCache();
 

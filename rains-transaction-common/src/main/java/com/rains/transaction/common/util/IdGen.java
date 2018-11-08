@@ -18,11 +18,6 @@ package com.rains.transaction.common.util;
 12位的计数序列号，序列号即一系列的自增id，可以支持同一节点同一毫秒生成多个ID序号，12位的计数序列号支持每个节点每毫秒产生4096个ID序号。
 
 最高位是符号位，始终为0，不可用。
----------------------
-作者：Light_shineWang
-来源：CSDN
-原文：https://blog.csdn.net/u011236357/article/details/51997083
-版权声明：本文为博主原创文章，转载请附上博文链接！
  */
 public class IdGen {
     private long workerId;

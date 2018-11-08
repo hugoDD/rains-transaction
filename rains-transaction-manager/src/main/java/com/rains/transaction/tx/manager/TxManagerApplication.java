@@ -25,6 +25,7 @@ import com.rains.transaction.tx.manager.spi.repository.JdbcTransactionRecoverRep
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.mongo.MongoHealthIndicatorAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -35,7 +36,7 @@ import java.util.List;
 /**
  * @author xiaoyu
  */
-@SpringBootApplication
+@SpringBootApplication(exclude = MongoHealthIndicatorAutoConfiguration.class)
 @EnableScheduling
 public class TxManagerApplication {
     private static final Logger logger = LoggerFactory.getLogger(TxManagerApplication.class);
@@ -60,7 +61,7 @@ public class TxManagerApplication {
         service.setGroup("tx_"+ nextId);
         service.setProtocol(protocolConfig);
 
-        List<MethodConfig> mothodConfigs = new ArrayList<>();
+        List<MethodConfig> methodConfigs = new ArrayList<>();
 
         List<ArgumentConfig> arguments = new ArrayList<>();
 
@@ -85,10 +86,10 @@ public class TxManagerApplication {
         addarguments.add(addTransactionArgumentConfig);
         addTransactionMethodConfig.setArguments(addarguments);
 
-        mothodConfigs.add(createGroupMethodConfig);
-        mothodConfigs.add(addTransactionMethodConfig);
+        methodConfigs.add(createGroupMethodConfig);
+        methodConfigs.add(addTransactionMethodConfig);
 
-        service.setMethods(mothodConfigs);
+        service.setMethods(methodConfigs);
 
         service.export();
         return service;
