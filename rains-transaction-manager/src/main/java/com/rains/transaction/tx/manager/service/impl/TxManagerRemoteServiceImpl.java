@@ -5,11 +5,8 @@ import com.rains.transaction.common.enums.TransactionStatusEnum;
 import com.rains.transaction.common.holder.LogUtil;
 import com.rains.transaction.common.netty.bean.TxTransactionGroup;
 import com.rains.transaction.common.netty.bean.TxTransactionItem;
-import com.rains.transaction.common.notify.CallbackListener;
 import com.rains.transaction.remote.service.TxManagerRemoteService;
-import com.rains.transaction.tx.manager.config.Address;
 import com.rains.transaction.tx.manager.service.TxManagerService;
-import com.rains.transaction.tx.manager.socket.ListenerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -17,7 +14,6 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -35,40 +31,31 @@ public class TxManagerRemoteServiceImpl implements TxManagerRemoteService {
     private NotifyManagerServiceImpl notifyManagerService;
 
     @Override
-    public Boolean createGroup(TxTransactionGroup txTransactionGroup, CallbackListener listener) {
+    public Boolean createGroup(TxTransactionGroup txTransactionGroup) {
         final List<TxTransactionItem> items = txTransactionGroup.getItemList();
-        if (!CollectionUtils.isEmpty(items)) {
+//        if (!CollectionUtils.isEmpty(items)) {
             //String modelName = ctx.channel().remoteAddress().toString();
-            String modelName = listener.getModeName();
+//            String modelName = listener.getModelName();
             //这里创建事务组的时候，事务组也作为第一条数据来存储
             //第二条数据才是发起方 因此是get(1)
-            final TxTransactionItem item = items.get(1);
-            item.setModelName(modelName);
-            item.setTmDomain(Address.getInstance().getDomain());
-        }
+//            final TxTransactionItem item = items.get(1);
+//            item.setModelName(modelName);
+//            item.setTmDomain(Address.getInstance().getDomain());
+//        }
         Boolean success = txManagerService.saveTxTransactionGroup(txTransactionGroup);
-        if (success) {
-            ListenerManager.getInstance().addClient(listener);
-        }
+
 
         return success;
     }
 
     @Override
-    public boolean addTransaction(TxTransactionItem item, CallbackListener listener) {
+    public boolean addTransaction(TxTransactionItem item) {
         if (item == null) {
             return false;
         }
-        //  String modelName = ctx.channel().remoteAddress().toString();
-        String modelName = listener.getModeName();
 
-        item.setModelName(modelName);
-        item.setTmDomain(Address.getInstance().getDomain());
         Boolean success = txManagerService.addTxTransaction(item.getTxGroupId(), item);
 
-        if (success) {
-            ListenerManager.getInstance().addClient(listener);
-        }
 
         return success;
     }
@@ -101,14 +88,14 @@ public class TxManagerRemoteServiceImpl implements TxManagerRemoteService {
             final List<TxTransactionItem> txTransactionItems = txManagerService.listByTxGroupId(groupId);
             if (!CollectionUtils.isEmpty(txTransactionItems)) {
                 //过滤掉发起方的数据，发起方已经进行提交，不需要再通信进行
-                final Map<String, List<TxTransactionItem>> listMap = txTransactionItems.stream()
+                final  List<TxTransactionItem> list = txTransactionItems.stream()
                         .filter(item -> item.getRole() == TransactionRoleEnum.ACTOR.getCode())
-                        .collect(Collectors.groupingBy(m -> m.getTmDomain()));
-                if (Objects.isNull(listMap)) {
+                        .collect(Collectors.toList());
+                if (Objects.isNull(list)) {
                     LogUtil.info(LOGGER, "事务组id:{},提交失败！数据不完整", () -> groupId);
                     return false;
                 }
-                notifyManagerService.notifyRollBack(groupId,listMap);
+                notifyManagerService.notifyRollBack(groupId,list);
             }
         } finally {
             //txManagerService.removeRedisByTxGroupId(txGroupId);
@@ -135,19 +122,19 @@ public class TxManagerRemoteServiceImpl implements TxManagerRemoteService {
 
         final List<TxTransactionItem> txTransactionItems = txManagerService.listByTxGroupId(groupId);
         //过滤掉发起方的数据，发起方已经进行提交，不需要再通信进行
-        final Map<String, List<TxTransactionItem>> listMap = txTransactionItems.stream()
+        final  List<TxTransactionItem> list = txTransactionItems.stream()
                 .filter(item -> item.getRole() == TransactionRoleEnum.ACTOR.getCode())
-                .collect(Collectors.groupingBy(m -> m.getTmDomain()));
+                .collect(Collectors.toList());
 
 
-        if (Objects.isNull(listMap)) {
+        if (Objects.isNull(list)) {
             LogUtil.info(LOGGER, "事务组id:{},提交失败！数据不完整", () -> groupId);
             return false;
         }
 
-        boolean isAllCommit = notifyManagerService.notifyCommit(groupId, listMap);
+        boolean isAllCommit = notifyManagerService.notifyCommit(groupId, list);
         if (!isAllCommit) {
-            notifyManagerService.notifyRollBack(groupId, listMap);
+            notifyManagerService.notifyRollBack(groupId, list);
         }
         return isAllCommit;
     }
@@ -157,17 +144,17 @@ public class TxManagerRemoteServiceImpl implements TxManagerRemoteService {
 
         final List<TxTransactionItem> txTransactionItems = txManagerService.listByTxGroupId(groupId);
         //过滤掉发起方的数据，发起方已经进行提交，不需要再通信进行
-        final Map<String, List<TxTransactionItem>> listMap = txTransactionItems.stream()
+        final List<TxTransactionItem> list = txTransactionItems.stream()
                 .filter(item -> item.getRole() == TransactionRoleEnum.ACTOR.getCode())
-                .collect(Collectors.groupingBy(m -> m.getTmDomain()));
+                .collect(Collectors.toList());
 
-        if (Objects.isNull(listMap) || listMap.isEmpty()) {
+        if (Objects.isNull(list) || list.isEmpty()) {
             LogUtil.info(LOGGER, "事务组id:{},提交失败！数据不完整", () -> groupId);
             return false;
         }
 
 
-        return     notifyManagerService.notifyRollBack(groupId, listMap);
+        return     notifyManagerService.notifyRollBack(groupId, list);
     }
 
 

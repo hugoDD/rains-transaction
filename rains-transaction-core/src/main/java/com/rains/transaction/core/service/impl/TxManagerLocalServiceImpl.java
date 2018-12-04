@@ -1,12 +1,10 @@
 package com.rains.transaction.core.service.impl;
 
-import com.rains.transaction.core.service.ModelNameService;
-import com.rains.transaction.core.service.TxManagerMessageService;
 import com.rains.transaction.common.enums.TransactionStatusEnum;
 import com.rains.transaction.common.netty.bean.TxTransactionGroup;
 import com.rains.transaction.common.netty.bean.TxTransactionItem;
-import com.rains.transaction.common.notify.CallbackListener;
-import com.rains.transaction.core.service.listener.TxTransactionNotifyListener;
+import com.rains.transaction.common.notify.CallbackModel;
+import com.rains.transaction.core.service.TxManagerMessageService;
 import com.rains.transaction.remote.service.TxManagerRemoteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -18,11 +16,11 @@ import javax.annotation.Resource;
 @Slf4j
 public class TxManagerLocalServiceImpl implements TxManagerMessageService {
 
-    private final CallbackListener listener = new TxTransactionNotifyListener();
+
     @Resource
     private TxManagerRemoteService txManagerRemoteService;
     @Resource
-    private ModelNameService modelNameService;
+    private CallbackModel callbackModel;
 
     /**
      * 保存事务组 在事务发起方的时候进行调用
@@ -32,8 +30,8 @@ public class TxManagerLocalServiceImpl implements TxManagerMessageService {
      */
     @Override
     public Boolean saveTxTransactionGroup(TxTransactionGroup txTransactionGroup) {
-        ((TxTransactionNotifyListener) listener).setModelName(modelNameService.findModelName());
-        return txManagerRemoteService.createGroup(txTransactionGroup, listener);
+
+        return txManagerRemoteService.createGroup(txTransactionGroup);
     }
 
     /**
@@ -45,9 +43,11 @@ public class TxManagerLocalServiceImpl implements TxManagerMessageService {
      */
     @Override
     public Boolean addTxTransaction(String txGroupId, TxTransactionItem txTransactionItem) {
-        ((TxTransactionNotifyListener) listener).setModelName(modelNameService.findModelName());
+
         txTransactionItem.setTxGroupId(txGroupId);
-        return txManagerRemoteService.addTransaction(txTransactionItem, listener);
+        txTransactionItem.setModelName(callbackModel.getModelName());
+        txTransactionItem.setTmDomain(callbackModel.getModelDomain());
+        return txManagerRemoteService.addTransaction(txTransactionItem);
 
     }
 

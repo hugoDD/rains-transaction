@@ -25,13 +25,13 @@ import com.rains.transaction.common.enums.TransactionStatusEnum;
 import com.rains.transaction.common.holder.LogUtil;
 import com.rains.transaction.common.netty.bean.TxTransactionGroup;
 import com.rains.transaction.common.netty.bean.TxTransactionItem;
+import com.rains.transaction.common.notify.CallbackModel;
 import com.rains.transaction.core.compensation.TxCompensationService;
 import com.rains.transaction.core.compensation.command.TxCompensationAction;
 import com.rains.transaction.core.concurrent.threadlocal.CompensationLocal;
 import com.rains.transaction.core.concurrent.threadpool.TransactionThreadPool;
 import com.rains.transaction.core.concurrent.threadpool.TxTransactionThreadFactory;
 import com.rains.transaction.core.helper.SpringBeanUtils;
-import com.rains.transaction.core.service.ModelNameService;
 import com.rains.transaction.core.service.TxManagerMessageService;
 import com.rains.transaction.remote.service.TransactionRecoverService;
 import org.apache.commons.lang3.reflect.MethodUtils;
@@ -65,15 +65,15 @@ public class TxCompensationServiceImpl implements TxCompensationService {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(TxCompensationServiceImpl.class);
     private static BlockingQueue<TxCompensationAction> QUEUE;
-    private final ModelNameService modelNameService;
+    private final CallbackModel callbackModel;
     private final TxManagerMessageService txManagerMessageService;
     private TransactionRecoverService transactionRecoverService;
     private TxConfig txConfig;
     private ScheduledExecutorService scheduledExecutorService;
 
     @Autowired
-    public TxCompensationServiceImpl(ModelNameService modelNameService, TxManagerMessageService txManagerMessageService) {
-        this.modelNameService = modelNameService;
+    public TxCompensationServiceImpl(CallbackModel modelNameService, TxManagerMessageService txManagerMessageService) {
+        this.callbackModel = modelNameService;
         this.txManagerMessageService = txManagerMessageService;
         this.scheduledExecutorService = new ScheduledThreadPoolExecutor(1,
                 TxTransactionThreadFactory.create("CompensationService", true));
@@ -144,7 +144,7 @@ public class TxCompensationServiceImpl implements TxCompensationService {
     public void start(TxConfig txConfig) throws Exception {
         this.txConfig = txConfig;
         if (txConfig.getCompensation()) {
-            final String modelName = modelNameService.findModelName();
+            final String modelName = callbackModel.getModelName();
             transactionRecoverService = SpringBeanUtils.getInstance().getBean(TransactionRecoverService.class);
             transactionRecoverService.init(modelName, txConfig);
             initCompensatePool();//初始化补偿操作的线程池

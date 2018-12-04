@@ -1,14 +1,9 @@
-
-package com.rains.transaction.common.notify;
-
-
+package com.rains.transaction.tx.manager.service;
 
 import com.rains.transaction.common.netty.bean.TxTransactionGroup;
 
-import java.io.Serializable;
+public interface CallBackListenerLocal {
 
-
-public interface CallbackListener extends Serializable {
     /**
      * 通知提交或者回滚本地事务
      *

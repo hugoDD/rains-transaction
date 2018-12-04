@@ -2,7 +2,6 @@ package com.rains.transaction.remote.service;
 
 import com.rains.transaction.common.netty.bean.TxTransactionGroup;
 import com.rains.transaction.common.netty.bean.TxTransactionItem;
-import com.rains.transaction.common.notify.CallbackListener;
 
 public interface TxManagerRemoteService {
 
@@ -10,14 +9,14 @@ public interface TxManagerRemoteService {
      * Begin transaction status enum.0
      * 创建事务组
      */
-    Boolean createGroup(TxTransactionGroup txTransactionGroup, CallbackListener listener);
+    Boolean createGroup(TxTransactionGroup txTransactionGroup);
 
 
     /**
      * Add transaction netty message action enum. 1
      * 添加事务
      */
-    boolean addTransaction(TxTransactionItem item, CallbackListener listener);
+    boolean addTransaction(TxTransactionItem item);
 
 
     /**

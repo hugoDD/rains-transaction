@@ -1,0 +1,1 @@
+txNotifyDubbo=com.rains.transaction.tx.manager.cluster.TxNotifyDubboLoadBalance

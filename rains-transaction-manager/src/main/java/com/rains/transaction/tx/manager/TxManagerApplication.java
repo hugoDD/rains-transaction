@@ -17,9 +17,10 @@
  */
 package com.rains.transaction.tx.manager;
 
-import com.alibaba.dubbo.config.*;
-import com.rains.transaction.common.notify.CallbackListener;
-import com.rains.transaction.common.util.IdGen;
+import com.alibaba.dubbo.config.ApplicationConfig;
+import com.alibaba.dubbo.config.ProtocolConfig;
+import com.alibaba.dubbo.config.RegistryConfig;
+import com.alibaba.dubbo.config.ServiceConfig;
 import com.rains.transaction.remote.service.TxManagerRemoteService;
 import com.rains.transaction.tx.manager.spi.repository.JdbcTransactionRecoverRepository;
 import org.slf4j.Logger;
@@ -28,9 +29,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author xiaoyu
@@ -55,44 +53,17 @@ public class TxManagerApplication {
         service.setInterface(TxManagerRemoteService.class);
         service.setRegistry(registryConfig);
         service.setRef(txManagerRemoteService);
-        long nextId = IdGen.get().nextId();
-        logger.info("注册 group is : {}",nextId);
-        service.setGroup("tx_"+ nextId);
+
         service.setProtocol(protocolConfig);
 
-        List<MethodConfig> mothodConfigs = new ArrayList<>();
-
-        List<ArgumentConfig> arguments = new ArrayList<>();
-
-        MethodConfig createGroupMethodConfig = new MethodConfig();
-        createGroupMethodConfig.setName("createGroup");
-        ArgumentConfig createGroupArgumentConfig = new ArgumentConfig();
-        createGroupArgumentConfig.setIndex(1);
-        createGroupArgumentConfig.setCallback(true);
-        createGroupArgumentConfig.setType(CallbackListener.class.getName());
-        arguments.add(createGroupArgumentConfig);
-        createGroupMethodConfig.setArguments(arguments);
-
-        MethodConfig addTransactionMethodConfig = new MethodConfig();
-        addTransactionMethodConfig.setName("addTransaction");
-
-        List<ArgumentConfig> addarguments = new ArrayList<>();
-
-        ArgumentConfig addTransactionArgumentConfig = new ArgumentConfig();
-        addTransactionArgumentConfig.setIndex(1);
-        addTransactionArgumentConfig.setCallback(true);
-        addTransactionArgumentConfig.setType(CallbackListener.class.getName());
-        addarguments.add(addTransactionArgumentConfig);
-        addTransactionMethodConfig.setArguments(addarguments);
-
-        mothodConfigs.add(createGroupMethodConfig);
-        mothodConfigs.add(addTransactionMethodConfig);
-
-        service.setMethods(mothodConfigs);
 
         service.export();
+
+
         return service;
     }
+
+    
 
 
 }

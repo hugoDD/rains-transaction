@@ -1,19 +1,18 @@
 package com.rains.transaction.tx.dubbo.configuration;
 
-import com.alibaba.dubbo.config.ApplicationConfig;
-import com.alibaba.dubbo.config.ReferenceConfig;
-import com.alibaba.dubbo.config.RegistryConfig;
+import com.alibaba.dubbo.config.*;
 import com.alibaba.dubbo.config.utils.ReferenceConfigCache;
+import com.rains.transaction.common.notify.CallbackModel;
 import com.rains.transaction.core.interceptor.AbstractTxTransactionAspect;
 import com.rains.transaction.core.interceptor.TxTransactionInterceptor;
 import com.rains.transaction.core.recover.TransactionRecoverServiceStub;
 import com.rains.transaction.core.service.AspectTransactionService;
-import com.rains.transaction.core.service.ModelNameService;
+import com.rains.transaction.core.service.listener.TxTransactionNotifyListener;
+import com.rains.transaction.remote.service.CallbackListener;
 import com.rains.transaction.remote.service.TransactionRecoverService;
 import com.rains.transaction.remote.service.TxManagerRemoteService;
 import com.rains.transaction.tx.dubbo.interceptor.DubboTxTransactionAspect;
 import com.rains.transaction.tx.dubbo.interceptor.DubboTxTransactionInterceptor;
-import com.rains.transaction.tx.dubbo.service.DubboModelNameServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -50,7 +49,7 @@ public class DubboTransactionAutoConfiguration {
         referenceConfig.setRegistry(registryConfig);
         referenceConfig.setInterface(TxManagerRemoteService.class);
         referenceConfig.setProtocol("dubbo");
-        referenceConfig.setGroup("*");
+        //referenceConfig.setGroup("*");
         referenceConfig.setCluster("failsafe");
         referenceConfig.setTimeout(5000);
 
@@ -78,8 +77,23 @@ public class DubboTransactionAutoConfiguration {
     }
 
     @Bean
-    public ModelNameService modelNameService(){
-        return  new DubboModelNameServiceImpl();
+    public CallbackModel modelNameService(ApplicationConfig applicationConfig, RegistryConfig registryConfig, ProtocolConfig protocolConfig){
+        CallbackModel callbackModel=  new CallbackModel();
+
+        ServiceConfig<CallbackListener> service = new ServiceConfig<>();
+        service.setApplication(applicationConfig);
+        service.setInterface(CallbackListener.class);
+        service.setRegistry(registryConfig);
+        service.setRef(new TxTransactionNotifyListener());
+        service.setProtocol(protocolConfig);
+
+        service.export();
+        String modelDomain = service.toUrl().getAddress();
+        logger.info("初始化modelDomain:{}",modelDomain);
+        callbackModel.setModelDomain(modelDomain);
+        callbackModel.setModelName(applicationConfig.getName());
+
+        return callbackModel;
     }
 
     @Bean

@@ -1,8 +1,6 @@
 
 package com.rains.transaction.core.service.handler;
 
-import com.rains.transaction.core.service.TxManagerMessageService;
-import com.rains.transaction.core.service.TxTransactionHandler;
 import com.rains.transaction.common.bean.TxTransactionInfo;
 import com.rains.transaction.common.enums.PropagationEnum;
 import com.rains.transaction.common.enums.TransactionRoleEnum;
@@ -13,9 +11,12 @@ import com.rains.transaction.common.holder.IdWorkerUtils;
 import com.rains.transaction.common.holder.LogUtil;
 import com.rains.transaction.common.netty.bean.TxTransactionGroup;
 import com.rains.transaction.common.netty.bean.TxTransactionItem;
+import com.rains.transaction.common.notify.CallbackModel;
 import com.rains.transaction.core.compensation.command.TxCompensationCommand;
 import com.rains.transaction.core.concurrent.threadlocal.TxTransactionLocal;
 import com.rains.transaction.core.concurrent.threadpool.TransactionThreadPool;
+import com.rains.transaction.core.service.TxManagerMessageService;
+import com.rains.transaction.core.service.TxTransactionHandler;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,17 +54,19 @@ public class StartTxTransactionHandler implements TxTransactionHandler {
 
     private final PlatformTransactionManager platformTransactionManager;
 
+    private CallbackModel callbackModel;
     /**
     *@Author: hugosz
     *@Description:
     *@Date: 10:41 2018/3/23
     */
     @Autowired(required = false)
-    public StartTxTransactionHandler(TransactionThreadPool transactionThreadPool, TxManagerMessageService txManagerMessageService, TxCompensationCommand txCompensationCommand, PlatformTransactionManager platformTransactionManager) {
+    public StartTxTransactionHandler(TransactionThreadPool transactionThreadPool, TxManagerMessageService txManagerMessageService, TxCompensationCommand txCompensationCommand, PlatformTransactionManager platformTransactionManager,CallbackModel modelNameService) {
         this.transactionThreadPool = transactionThreadPool;
         this.txManagerMessageService = txManagerMessageService;
         this.txCompensationCommand = txCompensationCommand;
         this.platformTransactionManager = platformTransactionManager;
+        this.callbackModel = modelNameService;
     }
 
 
@@ -172,6 +175,9 @@ public class StartTxTransactionHandler implements TxTransactionHandler {
 
         TxTransactionItem groupItem = new TxTransactionItem();
 
+        groupItem.setTmDomain(callbackModel.getModelDomain());
+        groupItem.setModelName(callbackModel.getModelName());
+
         //整个事务组状态为开始
         groupItem.setStatus(TransactionStatusEnum.BEGIN.getCode());
 
@@ -196,6 +202,8 @@ public class StartTxTransactionHandler implements TxTransactionHandler {
         item.setRole(TransactionRoleEnum.START.getCode());
         item.setStatus(TransactionStatusEnum.BEGIN.getCode());
         item.setTxGroupId(groupId);
+        item.setModelName(callbackModel.getModelName());
+        item.setTmDomain(callbackModel.getModelDomain());
 
         //设置事务最大等待时间
         item.setWaitMaxTime(info.getWaitMaxTime());

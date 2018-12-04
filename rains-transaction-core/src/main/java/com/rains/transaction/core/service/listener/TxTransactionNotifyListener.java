@@ -2,12 +2,11 @@ package com.rains.transaction.core.service.listener;
 
 import com.rains.transaction.common.netty.bean.TxTransactionGroup;
 import com.rains.transaction.common.netty.bean.TxTransactionItem;
-import com.rains.transaction.common.notify.CallbackListener;
 import com.rains.transaction.core.concurrent.task.BlockTask;
 import com.rains.transaction.core.concurrent.task.BlockTaskHelper;
+import com.rains.transaction.remote.service.CallbackListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
-
 
 import java.util.List;
 
