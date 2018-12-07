@@ -44,9 +44,7 @@ dubbo:
   application:
     id: dubbo-consume
     name: dubbo-consume
-    qos:
-      port: 22232
-      enable: false
+    qosEnable: false
   ## ProtocolConfig Bean
   protocol:
     id: dubbo

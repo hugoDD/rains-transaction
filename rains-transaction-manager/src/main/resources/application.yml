@@ -120,9 +120,7 @@ dubbo:
   application:
     id: tx-manager
     name: tx-manager
-    qos:
-      port: 22222
-      enable: false
+    qosEnable: false
   ## ProtocolConfig Bean
   protocol:
     id: dubbo

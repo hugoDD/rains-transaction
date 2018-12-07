@@ -39,9 +39,7 @@ dubbo:
   application:
     id: dubbo-order
     name: dubbo-order
-    qos:
-      port: 22231
-      enable: false
+    qosEnable: false
   ## ProtocolConfig Bean
   protocol:
     id: dubbo

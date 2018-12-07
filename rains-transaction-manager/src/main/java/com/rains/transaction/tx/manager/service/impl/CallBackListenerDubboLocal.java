@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CallBackListenerDubboLocal implements CallBackListenerLocal {
 
-    @Reference(check = false)
+    @Reference(check = false,loadbalance = "txNotifyDubbo")
     private CallbackListener listener;
 
     @Override

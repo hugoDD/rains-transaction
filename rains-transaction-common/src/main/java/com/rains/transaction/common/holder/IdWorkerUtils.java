@@ -17,6 +17,8 @@
  */
 package com.rains.transaction.common.holder;
 
+import com.rains.transaction.common.util.IdGen;
+
 import java.util.UUID;
 
 /**
@@ -95,11 +97,11 @@ public final class IdWorkerUtils {
     }
 
     public String buildPartNumber() {
-        return "P" + ID_WORKER_UTILS.nextId();
+        return "P" + IdGen.get().nextId();
     }
 
     public String buildSkuCode() {
-        return "S" + ID_WORKER_UTILS.nextId();
+        return "S" + IdGen.get().nextId();
     }
 
     public String createTaskKey() {

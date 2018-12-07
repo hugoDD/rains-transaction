@@ -35,7 +35,7 @@ public class NotifyManagerServiceImpl implements NotifyManagerService {
         try {
             txTransactionItems.forEach(item -> {
                 TxTransactionGroup txTransactionGroup = ExecutorMessageTool.buildNotifyMessage(item,TransactionStatusEnum.COMMIT);
-                ListenerManager.getInstance().addClient(item.getTxGroupId(),item.getTmDomain());
+                ListenerManager.getInstance().addClient(item.getTxGroupId(),item.getTmDomain()+":"+item.getTaskKey());
                 //CallbackModel listener = ListenerManager.getInstance().getChannelByModelName(item.getModelName());
                 boolean isNotifyCommit = false;
                 if (Objects.nonNull(txTransactionGroup)) {
@@ -52,6 +52,7 @@ public class NotifyManagerServiceImpl implements NotifyManagerService {
 
             });
         } catch (Exception e) {
+            LOGGER.error(e.getMessage(),e);
             LogUtil.info(LOGGER, "txManger 发送doCommit指令异常 ", e::getMessage);
         }finally {
             ListenerManager.getInstance().removeClient(groupId);
@@ -71,7 +72,7 @@ public class NotifyManagerServiceImpl implements NotifyManagerService {
 
                                    TxTransactionGroup txTransactionGroup =ExecutorMessageTool.buildNotifyMessage(item,
                                             TransactionStatusEnum.ROLLBACK);
-                                    ListenerManager.getInstance().addClient(item.getTxGroupId(),item.getTmDomain());
+                                    ListenerManager.getInstance().addClient(item.getTxGroupId(),item.getTmDomain()+":"+item.getTaskKey());
                                    // CallbackListener listener = ListenerManager.getInstance().getChannelByModelName(item.getModelName());
                                     if (Objects.nonNull(txTransactionGroup)) {
                                         listener.notify(txTransactionGroup);
@@ -91,6 +92,7 @@ public class NotifyManagerServiceImpl implements NotifyManagerService {
            // httpExecute(elseItems, TransactionStatusEnum.ROLLBACK);
             return true;
         } catch (Exception e) {
+
             LogUtil.info(LOGGER, "txManger 发送rollback指令异常 ", e::getMessage);
             return false;
         }finally {

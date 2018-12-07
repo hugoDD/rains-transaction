@@ -37,9 +37,7 @@ dubbo:
   application:
     id: dubbo-stock
     name: dubbo-stock
-    qos:
-      port: 22230
-      enable: false
+    qosEnable: false
   ## ProtocolConfig Bean
   protocol:
     id: dubbo
