@@ -107,11 +107,9 @@ public final class IdWorkerUtils {
     public String createTaskKey() {
         return String.valueOf(UUID.randomUUID().hashCode() & 0x7fffffff);
     }
-
     public String createUUID() {
         return String.valueOf(UUID.randomUUID().hashCode() & 0x7fffffff);
     }
-
     public String createGroupId() {
         return String.valueOf(UUID.randomUUID().hashCode() & 0x7fffffff);
     }
