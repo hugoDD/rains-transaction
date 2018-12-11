@@ -30,8 +30,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-/**
- * @author xiaoyu
+
+
+/*
+ * 文 件 名:  TxManagerApplication.java
+ * 版    权:  Copyright (c) 2018 com.rains.hugosz
+ * 描    述:  事务管理器启动类
+ * 创 建 人:  hugosz
+ * 创建时间:  2018/11/8
  */
 @SpringBootApplication
 @EnableScheduling
@@ -63,7 +69,7 @@ public class TxManagerApplication {
         return service;
     }
 
-    
+
 
 
 }

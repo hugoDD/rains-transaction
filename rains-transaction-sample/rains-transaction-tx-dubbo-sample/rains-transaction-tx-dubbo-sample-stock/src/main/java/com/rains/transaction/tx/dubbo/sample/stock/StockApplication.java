@@ -22,9 +22,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
-/**
- * @author xiaoyu
- */
 @SpringBootApplication
 //@ImportResource({"classpath:applicationContext.xml"})
 @MapperScan("com.rains.transaction.tx.dubbo.sample.stock.mapper")

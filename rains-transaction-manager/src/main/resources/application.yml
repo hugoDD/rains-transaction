@@ -135,9 +135,9 @@ dubbo:
 
 endpoints:
   health:
-    sensitive: false
+    sensitive: true
   dubbo:
-    enabled: false
+    enabled: true
 
 #eureka:
 #  instance:
